@@ -22,6 +22,20 @@ window.onload = function() {
   counter.innerHTML = `Count is ${score}`;
 }
 
+export function GameReset(element) {
+  const ConfirmReset = () => {
+    const ConfirmReset = confirm("本当にリセットしますか?");
+    if (ConfirmReset) {
+      const SecondFactorConfirmReset = confirm("本当に本当にリセットしますか?");
+      if (SecondFactorConfirmReset) {
+        localStorage.removeItem('score');
+        location.reload();
+      }
+    }
+  }
+  element.addEventListener('click', ConfirmReset);
+}
+
 function isMultipleOfTen(number) {
   if (number % 10 === 0) {
     console.log("level_up")
