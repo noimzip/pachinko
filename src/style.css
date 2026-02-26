@@ -82,6 +82,10 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.left {
+  left: 0;
+  margin-left: 10px;
+}
 .right {
   right: 0;
   margin-right: 10px;
@@ -92,8 +96,29 @@ button:focus-visible {
   margin-bottom: 10px;
 }
 
+#buttons {
+  position: absolute;
+  display: flex;
+  flex-flow: column;
+}
+
 #reset-button {
   position: absolute;
+  border-radius: 8px;
+  padding: 1em 1.25em;
+}
+
+#upgrade-button {
+  border-radius: 8px;
+  padding: 1em 1.25em;
+}
+
+#status-button {
+  border-radius: 8px;
+  padding: 1em 1.25em;
+}
+
+#save-button {
   border-radius: 8px;
   padding: 1em 1.25em;
 }

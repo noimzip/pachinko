@@ -11,14 +11,15 @@ export function ButtonClick(element) {
     counter.innerHTML = `Count is ${score}`;
     //console.count("score");
     //console.log(isMultipleOfTen(score));
-    localStorage.setItem('score', score);
   }
   element.addEventListener('click', Count);
 }
 
 window.onload = function() {
   const storage_score = parseInt(localStorage.getItem('score')) || 0;
+  const storage_autosave = JSON.parse(localStorage.getItem('autosave'));
   score = storage_score;
+  autosave.checked = storage_autosave;
   counter.innerHTML = `Count is ${score}`;
 }
 
@@ -29,11 +30,38 @@ export function GameReset(element) {
       const SecondFactorConfirmReset = confirm("本当に本当にリセットしますか?");
       if (SecondFactorConfirmReset) {
         localStorage.removeItem('score');
+        localStorage.removeItem('autosave');
         location.reload();
       }
     }
   }
   element.addEventListener('click', ConfirmReset);
+}
+
+//export function ShowGameStatus(element) {
+//}
+
+export function Save(element) {
+  const TriggerSave = () => {
+    localStorage.setItem('score', score);
+    localStorage.setItem('autosave', autosave.checked);
+    console.log("Saved.");
+  }
+  element.addEventListener('click', TriggerSave);
+
+  const autosave = document.getElementById("autosave");
+  let TriggerAutoSave;
+  const AutoSaveConditionCheck = () => {
+    if (autosave.checked) {
+      console.log("autosave_on");
+      TriggerAutoSave = setInterval(TriggerSave, 10000);
+    } else {
+      console.log("autosave_off");
+      clearInterval(TriggerAutoSave);
+    }
+  }
+  autosave.addEventListener('click', AutoSaveConditionCheck);
+  window.addEventListener('load', AutoSaveConditionCheck);
 }
 
 function isMultipleOfTen(number) {
