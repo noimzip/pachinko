@@ -63,6 +63,13 @@ h1 {
   color: #888;
 }
 
+#saved-dialog {
+  display: none;
+  position: absolute;
+  margin-top: 10px;
+  top: 0;
+}
+
 button {
   border-radius: 50%;
   border: 1px solid transparent;
