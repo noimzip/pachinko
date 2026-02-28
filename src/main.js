@@ -1,5 +1,5 @@
 import './style.css'
-import { ButtonClick, GameReset, Save } from './game.js'
+import { MainButtonClick, GameDataRemove, GameDataSave } from './game.js'
 
 document.querySelector('#app').innerHTML = `
   <header>
@@ -12,18 +12,18 @@ document.querySelector('#app').innerHTML = `
     </div>
   </header>
   <div>
-    <div id="counter"></div>
+    <div id="score-counter"></div>
     <button id="main-button" type="button"></button>
     <div id="buttons" class="right bottom">
       <div id="overall-main-button-clicked-times"></div>
-      <label>AutoSave:<input id="autosave" type="checkbox" checked></label>
-      <button id="save-button" type="button">Save</button>
-      <button id="status-button" type="button">Status</button>
+      <label>AutoSave:<input id="autosave-checkbox" type="checkbox" checked></label>
+      <button id="game-data-save-button" type="button">Save</button>
+      <button id="game-status-button" type="button">Status</button>
     </div>
-    <button id="reset-button" class="left bottom" type="button">Reset</button>
+    <button id="game-data-remove-button" class="left bottom" type="button">Reset</button>
   </div>
 `
 
-ButtonClick(document.getElementById("main-button"));
-GameReset(document.getElementById("reset-button"));
-Save(document.getElementById("save-button"));
+MainButtonClick(document.getElementById("main-button"));
+GameDataRemove(document.getElementById("game-data-remove-button"));
+GameDataSave(document.getElementById("game-data-save-button"));

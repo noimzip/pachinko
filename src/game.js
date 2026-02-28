@@ -5,21 +5,23 @@ let overall_clicked_times = 0; //game-button-clicked-times
 let lifetime_playtime; //game-lifetime-playtime
 let playtime; //game-playtime
 
-export function ButtonClick(element) {
-  const counter = document.getElementById("counter");
+export function MainButtonClick(element) {
+  const score_counter = document.getElementById("score-counter");
   const overall_main_button_clicked_times = document.getElementById("overall-main-button-clicked-times");
-  const Count = () => {
+  const MainButtonClickTrigger = () => {
     score += cps;
     overall_clicked_times += 1;
-    counter.innerHTML = `Count is ${score}`;
+    score_counter.innerHTML = `Count is ${score}`;
     overall_main_button_clicked_times.innerHTML = `Overall button click times: ${overall_clicked_times}`;
     //console.count("score");
     //console.log(isMultipleOfTen(score));
   }
-  element.addEventListener('click', Count);
+  element.addEventListener('click', MainButtonClickTrigger);
 }
 
 window.onload = function() {
+  const autosave_checkbox = document.getElementById("autosave-checkbox");
+  const score_counter = document.getElementById("score-counter");
   const overall_main_button_clicked_times = document.getElementById("overall-main-button-clicked-times");
   const storage_score = parseInt(localStorage.getItem('score')) || 0;
   const storage_cps = parseInt(localStorage.getItem('cps')) || 1;
@@ -28,17 +30,17 @@ window.onload = function() {
   score = storage_score;
   cps = storage_cps;
   overall_clicked_times = storage_overall_clicked_times;
-  autosave.checked = storage_autosave;
-  counter.innerHTML = `Count is ${score}`;
+  autosave_checkbox.checked = storage_autosave;
+  score_counter.innerHTML = `Count is ${score}`;
   overall_main_button_clicked_times.innerHTML = `Overall button click times: ${overall_clicked_times}`;
 }
 
-export function GameReset(element) {
-  const ConfirmReset = () => {
-    const ConfirmReset = confirm("本当にリセットしますか?");
-    if (ConfirmReset) {
-      const SecondFactorConfirmReset = confirm("本当に本当にリセットしますか?");
-      if (SecondFactorConfirmReset) {
+export function GameDataRemove(element) {
+  const GameDataRemoveTrigger = () => {
+    const GameDataRemoveConfirm = confirm("本当にリセットしますか?");
+    if (GameDataRemoveConfirm) {
+      const SecondFactorGameDataRemoveConfirm = confirm("本当に本当にリセットしますか?");
+      if (SecondFactorGameDataRemoveConfirm) {
         localStorage.removeItem('score');
         localStorage.removeItem('cps');
         localStorage.removeItem('overall_clicked_times');
@@ -47,57 +49,52 @@ export function GameReset(element) {
       }
     }
   }
-  element.addEventListener('click', ConfirmReset);
+  element.addEventListener('click', GameDataRemoveTrigger);
 }
 
-//export function ShowGameStatus(element) {
-//}
-
-export function Save(element) {
-  const saved_dialog = document.getElementById("saved-dialog");
-  const TriggerSave = () => {
+export function GameDataSave(element) {
+  let AutoSaveInterval;
+  const autosave_checkbox = document.getElementById("autosave-checkbox");
+  const GameDataSaveTrigger = () => {
     localStorage.setItem('score', score);
     localStorage.setItem('cps', cps);
     localStorage.setItem('overall_clicked_times', overall_clicked_times);
-    localStorage.setItem('autosave', autosave.checked);
-    ShowDialog("saved_dialog", "saved.");
+    localStorage.setItem('autosave', autosave_checkbox.checked);
+    CreateNotification("saved_dialog", "Saved.");
     //console.log("Saved.");
   }
-  element.addEventListener('click', TriggerSave);
+  element.addEventListener('click', GameDataSaveTrigger);
 
-  const HideSavedDialog = () => {
-    saved_dialog.style.display = "none";
-  }
-
-  const autosave = document.getElementById("autosave");
-  let TriggerAutoSave;
-  const AutoSaveConditionCheck = () => {
-    if (autosave.checked) {
+  const AutoSaveTrigger = () => {
+    if (autosave_checkbox.checked) {
       //console.log("autosave_on");
-      TriggerAutoSave = setInterval(TriggerSave, 60000);
+      AutoSaveInterval = setInterval(GameDataSaveTrigger, 60000);
     } else {
       //console.log("autosave_off");
-      clearInterval(TriggerAutoSave);
+      clearInterval(AutoSaveInterval);
     }
   }
-  autosave.addEventListener('click', AutoSaveConditionCheck);
-  window.addEventListener('load', AutoSaveConditionCheck);
+  autosave_checkbox.addEventListener('click', AutoSaveTrigger);
+  window.addEventListener('load', AutoSaveTrigger);
 }
 
-function ShowDialog(msgid, msg) {
+function CreateNotification(msgid, msg) {
   const notification_area = document.getElementById("notification-area");
-  notification_area.insertAdjacentHTML("afterbegin", `<div class="dialog" id='${msgid}'>${msg}</div>`);
+  notification_area.insertAdjacentHTML("afterbegin", `<div class="notification" id='${msgid}'><span id="close-notification">x</span>${msg}</div>`);
   setTimeout(() => {
-    const remove_dialog = document.getElementById(`${msgid}`);
-    remove_dialog.remove();
-  }, 10000);
-}
-
-function isMultipleOfTen(number) {
-  if (number % 10 === 0) {
-    console.log("level_up")
+    const notification = document.getElementById(`${msgid}`);
+    notification.remove();
+  }, 10000); 
+  
+  const close_notification = document.getElementById("close-notification");
+  const NotificationCloseTrigger = () => {
+    close_notification.parentNode.remove();
   }
+  close_notification.addEventListener('click', NotificationCloseTrigger);
 }
 
-function level_up_check() {
-}
+//function isMultipleOfTen(number) {
+//  if (number % 10 === 0) {
+//    console.log("level_up");
+//  }
+//}
