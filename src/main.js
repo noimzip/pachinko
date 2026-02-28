@@ -3,8 +3,7 @@ import { ButtonClick, GameReset, Save } from './game.js'
 
 document.querySelector('#app').innerHTML = `
   <header>
-    <div id="saved-dialog">
-      saved.
+    <div id="notification-area">
     </div>
     <div id="upgrades-section">
       <span class="section-title">Upgrades</span>

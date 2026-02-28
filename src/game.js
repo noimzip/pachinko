@@ -60,7 +60,7 @@ export function Save(element) {
     localStorage.setItem('cps', cps);
     localStorage.setItem('overall_clicked_times', overall_clicked_times);
     localStorage.setItem('autosave', autosave.checked);
-    saved_dialog.style.display = "block";
+    ShowDialog("saved_dialog", "saved.");
     //console.log("Saved.");
   }
   element.addEventListener('click', TriggerSave);
@@ -82,6 +82,15 @@ export function Save(element) {
   }
   autosave.addEventListener('click', AutoSaveConditionCheck);
   window.addEventListener('load', AutoSaveConditionCheck);
+}
+
+function ShowDialog(msgid, msg) {
+  const notification_area = document.getElementById("notification-area");
+  notification_area.insertAdjacentHTML("afterbegin", `<div class="dialog" id='${msgid}'>${msg}</div>`);
+  setTimeout(() => {
+    const remove_dialog = document.getElementById(`${msgid}`);
+    remove_dialog.remove();
+  }, 10000);
 }
 
 function isMultipleOfTen(number) {

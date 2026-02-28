@@ -63,11 +63,20 @@ h1 {
   color: #888;
 }
 
-#saved-dialog {
-  display: none;
+#notification-area {
   position: absolute;
-  margin-top: 10px;
   top: 0;
+  height: 10%;
+  overflow: scroll;
+}
+
+.dialog {
+  margin-top: 10px;
+  padding: 2.5px;
+  padding-left: 30px;
+  padding-right: 30px;
+  color: #fff;
+  background-color: #000;
 }
 
 button {
