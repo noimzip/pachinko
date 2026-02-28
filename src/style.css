@@ -87,8 +87,12 @@ h1 {
   cursor: pointer;
 }
 
-button {
+#main-button {
   border-radius: 50%;
+}
+
+button {
+  border-radius: 8px;
   border: 1px solid transparent;
   padding: 2.5em 2.5em;
   font-size: 1em;
@@ -120,6 +124,10 @@ button:focus-visible {
   margin-bottom: 10px;
 }
 
+.basic-button {
+  padding: 1em 1.25em;
+}
+
 #buttons {
   position: absolute;
   display: flex;
@@ -128,23 +136,6 @@ button:focus-visible {
 
 #game-data-remove-button {
   position: absolute;
-  border-radius: 8px;
-  padding: 1em 1.25em;
-}
-
-#upgrade-button {
-  border-radius: 8px;
-  padding: 1em 1.25em;
-}
-
-#game-status-button {
-  border-radius: 8px;
-  padding: 1em 1.25em;
-}
-
-#game-data-save-button {
-  border-radius: 8px;
-  padding: 1em 1.25em;
 }
 
 @media (prefers-color-scheme: light) {
