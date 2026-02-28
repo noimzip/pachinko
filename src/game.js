@@ -1,10 +1,8 @@
-let lifetime_score; //game-lifetime-score
 let score = 0; //game-score
 let cps = 1; //game-click-per-score
-let overall_clicked_times = 0; //game-button-clicked-times
 let overall_play_minutes = 0; //game-overall-playtime
 let overall_play_hours = 0; //game-overall-playtime
-let playtime; //game-playtime
+let overall_clicked_times = 0; //game-button-clicked-times
 
 export function MainButtonClick(element) {
   const score_counter = document.getElementById("score-counter");
@@ -21,10 +19,11 @@ export function MainButtonClick(element) {
 }
 
 window.onload = function() {
-  const autosave_checkbox = document.getElementById("autosave-checkbox");
-  const score_counter = document.getElementById("score-counter");
-  const overall_main_button_clicked_times = document.getElementById("overall-main-button-clicked-times");
-  const overall_playtime_dom = document.getElementById("overall-play-time");
+  (function GameDataLoad() {
+    const autosave_checkbox = document.getElementById("autosave-checkbox");
+    const score_counter = document.getElementById("score-counter");
+    const overall_main_button_clicked_times = document.getElementById("overall-main-button-clicked-times");
+    const overall_playtime_dom = document.getElementById("overall-play-time");
     const GameDataArray = 
       [
         score,
@@ -45,12 +44,12 @@ window.onload = function() {
         overall_clicked_times
       ] = GameDataArrayStorage || GameDataArray;
     }
-  score_counter.innerHTML = `Count is ${score}`;
-  overall_main_button_clicked_times.innerHTML = `Overall button click times: ${overall_clicked_times}`;
-  overall_playtime_dom.innerHTML = `Overall Playtime: ${overall_play_hours} hours, ${overall_play_minutes} minutes`;
-}
+    score_counter.innerHTML = `Count is ${score}`;
+    overall_main_button_clicked_times.innerHTML = `Overall button click times: ${overall_clicked_times}`;
+    overall_playtime_dom.innerHTML = `Overall Playtime: ${overall_play_hours} hours, ${overall_play_minutes} minutes`;
+  }());
 
-export function PlayTime() {
+  (function PlayTime() {
   const overall_playtime_dom = document.getElementById("overall-play-time");
   const PlayTimeAddTrigger = () => {
     overall_play_minutes += 1;
@@ -58,10 +57,11 @@ export function PlayTime() {
       overall_play_hours += 1;
       overall_play_minutes = 0;
     }
-    console.log(overall_play_minutes);
     overall_playtime_dom.innerHTML = `Overall Playtime: ${overall_play_hours} hours, ${overall_play_minutes} minutes`;
   }
-  setInterval(PlayTimeAddTrigger, 60000);
+
+    setInterval(PlayTimeAddTrigger, 60000);
+  }());
 }
 
 export function GameDataRemove(element) {

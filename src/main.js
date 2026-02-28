@@ -7,7 +7,7 @@ document.querySelector('#app').innerHTML = `
     </div>
     <div id="upgrades-section">
       <span class="section-title">Upgrades</span>
-      <div id="upgrades">
+      <div id="upgrades-area">
       </div>
     </div>
   </header>
@@ -23,7 +23,7 @@ document.querySelector('#app').innerHTML = `
       <button id="export-button" class="basic-button" type="button">Export</button>
       <button id="import-button" class="basic-button" type="button">Import</button>
     </div>
-    <button id="game-data-remove-button" class="left bottom" type="button">Reset</button>
+    <button id="game-data-remove-button" class="basic-button left bottom" type="button">Reset</button>
   </div>
 `
 
@@ -31,3 +31,5 @@ MainButtonClick(document.getElementById("main-button"));
 GameDataRemove(document.getElementById("game-data-remove-button"));
 GameDataSave(document.getElementById("game-data-save-button"));
 PlayTime();
+GameDataExport(document.getElementById("export-button"));
+GameDataImport(document.getElementById("game-data-save-button"));
