@@ -2,7 +2,8 @@ let lifetime_score; //game-lifetime-score
 let score = 0; //game-score
 let cps = 1; //game-click-per-score
 let overall_clicked_times = 0; //game-button-clicked-times
-let lifetime_playtime; //game-lifetime-playtime
+let overall_play_minutes = 0; //game-overall-playtime
+let overall_play_hours = 0; //game-overall-playtime
 let playtime; //game-playtime
 
 export function MainButtonClick(element) {
@@ -23,16 +24,36 @@ window.onload = function() {
   const autosave_checkbox = document.getElementById("autosave-checkbox");
   const score_counter = document.getElementById("score-counter");
   const overall_main_button_clicked_times = document.getElementById("overall-main-button-clicked-times");
+  const overall_playtime_dom = document.getElementById("overall-play-time");
   const storage_score = parseInt(localStorage.getItem('score')) || 0;
   const storage_cps = parseInt(localStorage.getItem('cps')) || 1;
   const storage_overall_clicked_times = parseInt(localStorage.getItem('overall_clicked_times')) || 0;
+  const storage_overall_play_minutes =  parseInt(localStorage.getItem('overall_play_minutes')) || 0;
+  const storage_overall_play_hours =  parseInt(localStorage.getItem('overall_play_hours')) || 0;
   const storage_autosave = JSON.parse(localStorage.getItem('autosave'));
   score = storage_score;
   cps = storage_cps;
   overall_clicked_times = storage_overall_clicked_times;
+  overall_play_minutes = storage_overall_play_minutes;
+  overall_play_hours = storage_overall_play_hours;
   autosave_checkbox.checked = storage_autosave;
   score_counter.innerHTML = `Count is ${score}`;
   overall_main_button_clicked_times.innerHTML = `Overall button click times: ${overall_clicked_times}`;
+  overall_playtime_dom.innerHTML = `Overall Playtime: ${overall_play_hours} hours, ${overall_play_minutes} minutes`;
+}
+
+export function PlayTime() {
+  const overall_playtime_dom = document.getElementById("overall-play-time");
+  const PlayTimeAddTrigger = () => {
+    overall_play_minutes += 1;
+    if (overall_play_minutes % 60 == 0 && overall_play_minutes !== 0) {
+      overall_play_hours += 1;
+      overall_play_minutes = 0;
+    }
+    console.log(overall_play_minutes);
+    overall_playtime_dom.innerHTML = `Overall Playtime: ${overall_play_hours} hours, ${overall_play_minutes} minutes`;
+  }
+  setInterval(PlayTimeAddTrigger, 60000);
 }
 
 export function GameDataRemove(element) {
@@ -44,6 +65,8 @@ export function GameDataRemove(element) {
         localStorage.removeItem('score');
         localStorage.removeItem('cps');
         localStorage.removeItem('overall_clicked_times');
+        localStorage.removeItem('overall_play_minutes');
+        localStorage.removeItem('overall_play_hours');
         localStorage.removeItem('autosave');
         location.reload();
       }
@@ -59,6 +82,8 @@ export function GameDataSave(element) {
     localStorage.setItem('score', score);
     localStorage.setItem('cps', cps);
     localStorage.setItem('overall_clicked_times', overall_clicked_times);
+    localStorage.setItem('overall_play_minutes', overall_play_minutes);
+    localStorage.setItem('overall_play_hours', overall_play_hours);
     localStorage.setItem('autosave', autosave_checkbox.checked);
     CreateNotification("saved_dialog", "Saved.");
     //console.log("Saved.");

@@ -1,5 +1,5 @@
 import './style.css'
-import { MainButtonClick, GameDataRemove, GameDataSave } from './game.js'
+import { MainButtonClick, GameDataRemove, GameDataSave, PlayTime } from './game.js'
 
 document.querySelector('#app').innerHTML = `
   <header>
@@ -16,6 +16,7 @@ document.querySelector('#app').innerHTML = `
     <button id="main-button" type="button"></button>
     <div id="buttons" class="right bottom">
       <div id="overall-main-button-clicked-times"></div>
+      <div id="overall-play-time"></div>
       <label>AutoSave:<input id="autosave-checkbox" type="checkbox" checked></label>
       <button id="game-data-save-button" type="button">Save</button>
       <button id="game-status-button" type="button">Status</button>
@@ -27,3 +28,4 @@ document.querySelector('#app').innerHTML = `
 MainButtonClick(document.getElementById("main-button"));
 GameDataRemove(document.getElementById("game-data-remove-button"));
 GameDataSave(document.getElementById("game-data-save-button"));
+PlayTime();
