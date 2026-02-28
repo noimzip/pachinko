@@ -25,18 +25,26 @@ window.onload = function() {
   const score_counter = document.getElementById("score-counter");
   const overall_main_button_clicked_times = document.getElementById("overall-main-button-clicked-times");
   const overall_playtime_dom = document.getElementById("overall-play-time");
-  const storage_score = parseInt(localStorage.getItem('score')) || 0;
-  const storage_cps = parseInt(localStorage.getItem('cps')) || 1;
-  const storage_overall_clicked_times = parseInt(localStorage.getItem('overall_clicked_times')) || 0;
-  const storage_overall_play_minutes =  parseInt(localStorage.getItem('overall_play_minutes')) || 0;
-  const storage_overall_play_hours =  parseInt(localStorage.getItem('overall_play_hours')) || 0;
-  const storage_autosave = JSON.parse(localStorage.getItem('autosave'));
-  score = storage_score;
-  cps = storage_cps;
-  overall_clicked_times = storage_overall_clicked_times;
-  overall_play_minutes = storage_overall_play_minutes;
-  overall_play_hours = storage_overall_play_hours;
-  autosave_checkbox.checked = storage_autosave;
+    const GameDataArray = 
+      [
+        score,
+        cps,
+        autosave_checkbox.checked,
+        overall_play_minutes,
+        overall_play_hours,
+        overall_clicked_times
+      ];
+    for (let i = 0; i < GameDataArray.length; i++) {
+      const GameDataArrayStorage = JSON.parse(localStorage.getItem('GameDataArray'));
+      [
+        score,
+        cps,
+        autosave_checkbox.checked,
+        overall_play_minutes,
+        overall_play_hours,
+        overall_clicked_times
+      ] = GameDataArrayStorage || GameDataArray;
+    }
   score_counter.innerHTML = `Count is ${score}`;
   overall_main_button_clicked_times.innerHTML = `Overall button click times: ${overall_clicked_times}`;
   overall_playtime_dom.innerHTML = `Overall Playtime: ${overall_play_hours} hours, ${overall_play_minutes} minutes`;
@@ -62,12 +70,7 @@ export function GameDataRemove(element) {
     if (GameDataRemoveConfirm) {
       const SecondFactorGameDataRemoveConfirm = confirm("本当に本当にリセットしますか?");
       if (SecondFactorGameDataRemoveConfirm) {
-        localStorage.removeItem('score');
-        localStorage.removeItem('cps');
-        localStorage.removeItem('overall_clicked_times');
-        localStorage.removeItem('overall_play_minutes');
-        localStorage.removeItem('overall_play_hours');
-        localStorage.removeItem('autosave');
+        localStorage.removeItem('GameDataArray');
         location.reload();
       }
     }
@@ -79,12 +82,17 @@ export function GameDataSave(element) {
   let AutoSaveInterval;
   const autosave_checkbox = document.getElementById("autosave-checkbox");
   const GameDataSaveTrigger = () => {
-    localStorage.setItem('score', score);
-    localStorage.setItem('cps', cps);
-    localStorage.setItem('overall_clicked_times', overall_clicked_times);
-    localStorage.setItem('overall_play_minutes', overall_play_minutes);
-    localStorage.setItem('overall_play_hours', overall_play_hours);
-    localStorage.setItem('autosave', autosave_checkbox.checked);
+    const GameDataArray = 
+      [
+        score,
+        cps,
+        autosave_checkbox.checked,
+        overall_play_minutes,
+        overall_play_hours,
+        overall_clicked_times
+      ];
+    const GameDataArrayJSON = JSON.stringify(GameDataArray);
+    localStorage.setItem('GameDataArray', GameDataArrayJSON);
     CreateNotification("saved_dialog", "Saved.");
     //console.log("Saved.");
   }
