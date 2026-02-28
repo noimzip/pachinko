@@ -76,14 +76,15 @@ h1 {
   padding-left: 60px;
   padding-right: 60px;
   color: #fff;
-  background-color: #000;
+  background-color: #1a1a1a;
+  border-radius: 8px;
 }
 
 #close-notification {
   position: absolute;
   left: 0;
   margin-left: 10px;
-  color: #fff;
+  cursor: pointer;
 }
 
 button {
@@ -156,5 +157,9 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+  .notification {
+    background-color: #f9f9f9;
+    color: #000;
   }
 }
