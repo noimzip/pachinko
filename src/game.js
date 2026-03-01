@@ -11,12 +11,17 @@ const gameState = {
   }
 };
 
+function UpdateDOM() {
+  document.getElementById("score-counter").innerHTML = `Count is ${gameState.score}`;
+  document.getElementById("overall-main-button-clicked-times").innerHTML = `Overall button click times: ${gameState.stats.totalClicks}`;
+  document.getElementById("overall-play-time").innerHTML = `Overall Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
+}
+
 export function MainButtonClick(element) {
   const MainButtonClickTrigger = () => {
     gameState.score += gameState.cps;
     gameState.stats.totalClicks += 1;
-    document.getElementById("score-counter").innerHTML = `Count is ${gameState.score}`;
-    document.getElementById("overall-main-button-clicked-times").innerHTML = `Overall button click times: ${gameState.stats.totalClicks}`;
+    UpdateDOM();
   }
   element.addEventListener('click', MainButtonClickTrigger);
 }
@@ -32,9 +37,7 @@ export function GameDataManage(SaveElement, RemoveElement) {
     } else {
       document.getElementById("autosave-checkbox").checked = false;
     }
-    document.getElementById("score-counter").innerHTML = `Count is ${gameState.score}`;
-    document.getElementById("overall-main-button-clicked-times").innerHTML = `Overall button click times: ${gameState.stats.totalClicks}`;
-    document.getElementById("overall-play-time").innerHTML = `Overall Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
+    UpdateDOM();
   }
   window.addEventListener('load', load);
 
@@ -79,7 +82,7 @@ window.onload = function() {
         gameState.stats.hours += 1;
         gameState.stats.minutes = 0;
       }
-      document.getElementById("overall-play-time").innerHTML = `Overall Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
+      UpdateDOM();
     }
     setInterval(PlayTimeAddTrigger, 60000);
   }());
