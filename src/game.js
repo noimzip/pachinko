@@ -50,16 +50,14 @@ window.onload = function() {
   }());
 
   (function PlayTime() {
-  const overall_playtime_dom = document.getElementById("overall-play-time");
-  const PlayTimeAddTrigger = () => {
-    overall_play_minutes += 1;
-    if (overall_play_minutes % 60 == 0 && overall_play_minutes !== 0) {
-      overall_play_hours += 1;
-      overall_play_minutes = 0;
+    const PlayTimeAddTrigger = () => {
+      overall_play_minutes += 1;
+      if (overall_play_minutes % 60 == 0 && overall_play_minutes !== 0) {
+        overall_play_hours += 1;
+        overall_play_minutes = 0;
+      }
+      document.getElementById("overall-play-time").innerHTML = `Overall Playtime: ${overall_play_hours} hours, ${overall_play_minutes} minutes`;
     }
-    overall_playtime_dom.innerHTML = `Overall Playtime: ${overall_play_hours} hours, ${overall_play_minutes} minutes`;
-  }
-
     setInterval(PlayTimeAddTrigger, 60000);
   }());
 }
