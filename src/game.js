@@ -12,25 +12,24 @@ const gameState = {
 };
 
 // DOM management functions
-function UpdateDOM() {
+function updateDOM() {
   document.getElementById("score-counter").innerHTML = `Count is ${gameState.score}`;
   document.getElementById("overall-main-button-clicked-times").innerHTML = `Overall button click times: ${gameState.stats.totalClicks}`;
   document.getElementById("overall-play-time").innerHTML = `Overall Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
 }
 
 // Main button click processing
-export function MainButtonClick(element) {
-  const MainButtonClickTrigger = () => {
+export function initializeMainButton(element) {
+  element.addEventListener('click', () => {
     gameState.score += gameState.cps;
     gameState.stats.totalClicks += 1;
-    UpdateDOM();
-  }
-  element.addEventListener('click', MainButtonClickTrigger);
+    updateDOM();
+  });
 }
 
 // Data Management Functions (Save, Load, Data Deletion)
-export function GameDataManage(SaveElement, RemoveElement) {
-  const load = () => {
+export function initializeDataManagement(saveButton, removeButton, autoSaveButton) {
+  const loadGame = () => {
     const savedData = localStorage.getItem('GameData');
     if (savedData) {
       Object.assign(gameState, JSON.parse(savedData));
@@ -40,17 +39,17 @@ export function GameDataManage(SaveElement, RemoveElement) {
     } else {
       document.getElementById("autosave-checkbox").checked = false;
     }
-    UpdateDOM();
+    updateDOM();
   }
-  window.addEventListener('load', load);
+  window.addEventListener('load', loadGame);
 
-  const save = () => {
+  const saveGame = () => {
     localStorage.setItem('GameData', JSON.stringify(gameState));
-    CreateNotification("saved_dialog", "Saved.");
+    createNotification("saved_dialog", "Saved.");
   }
-  SaveElement.addEventListener('click', save);
+  saveButton.addEventListener('click', saveGame);
 
-  const remove = () => {
+  const resetGame = () => {
     const GameDataRemoveConfirm = confirm("本当にリセットしますか?");
     if (GameDataRemoveConfirm) {
       const SecondFactorGameDataRemoveConfirm = confirm("本当に本当にリセットしますか?");
@@ -60,40 +59,36 @@ export function GameDataManage(SaveElement, RemoveElement) {
       }
     }
   }
-  RemoveElement.addEventListener('click', remove);
+  removeButton.addEventListener('click', resetGame);
 
-  let AutoSaveInterval;
-  const autosave_checkbox = document.getElementById("autosave-checkbox");
-  const autosave = () => {
-    if (autosave_checkbox.checked) {
-      AutoSaveInterval = setInterval(save, 60000);
+  let autoSaveInterval;
+  const autoSaveGame = () => {
+    if (autoSaveButton.checked) {
+      autoSaveInterval = setInterval(saveGame, 60000);
       gameState.settings.autosave = true;
     } else {
-      clearInterval(AutoSaveInterval);
+      clearInterval(autoSaveInterval);
       gameState.settings.autosave = false;
     }
   }
-  autosave_checkbox.addEventListener('click', autosave);
-  window.addEventListener('load', autosave);
+  autoSaveButton.addEventListener('click', autoSaveGame);
+  window.addEventListener('load', autoSaveGame);
 }
 
-// todo: Migrating to a management method that does not utilize the window.onload function
-window.onload = function() {
-  (function PlayTime() {
-    const PlayTimeAddTrigger = () => {
+  (function playTimer() {
+    setInterval(() => {
       gameState.stats.minutes += 1;
       if (gameState.stats.minutes % 60 == 0 && gameState.stats.minutes !== 0) {
         gameState.stats.hours += 1;
         gameState.stats.minutes = 0;
       }
-      UpdateDOM();
-    }
-    setInterval(PlayTimeAddTrigger, 60000);
+      updateDOM();
+    }, 60000)
   }());
 }
 
 // todo: Fix for reusing notification IDs
-function CreateNotification(msgid, msg) {
+function createNotification(msgid, msg) {
   const notification_area = document.getElementById("notification-area");
   notification_area.insertAdjacentHTML
   (
@@ -108,10 +103,9 @@ function CreateNotification(msgid, msg) {
   }, 10000); 
   
   const close_notification = document.getElementById("close-notification");
-  const NotificationCloseTrigger = () => {
+  close_notification.addEventListener('click', () => {
     close_notification.parentNode.remove();
   }
-  close_notification.addEventListener('click', NotificationCloseTrigger);
 }
 
 //function isMultipleOfTen(number) {
