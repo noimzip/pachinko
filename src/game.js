@@ -11,12 +11,14 @@ const gameState = {
   }
 };
 
+// DOM management functions
 function UpdateDOM() {
   document.getElementById("score-counter").innerHTML = `Count is ${gameState.score}`;
   document.getElementById("overall-main-button-clicked-times").innerHTML = `Overall button click times: ${gameState.stats.totalClicks}`;
   document.getElementById("overall-play-time").innerHTML = `Overall Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
 }
 
+// Main button click processing
 export function MainButtonClick(element) {
   const MainButtonClickTrigger = () => {
     gameState.score += gameState.cps;
@@ -26,6 +28,7 @@ export function MainButtonClick(element) {
   element.addEventListener('click', MainButtonClickTrigger);
 }
 
+// Data Management Functions (Save, Load, Data Deletion)
 export function GameDataManage(SaveElement, RemoveElement) {
   const load = () => {
     const savedData = localStorage.getItem('GameData');
@@ -74,6 +77,7 @@ export function GameDataManage(SaveElement, RemoveElement) {
   window.addEventListener('load', autosave);
 }
 
+// todo: Migrating to a management method that does not utilize the window.onload function
 window.onload = function() {
   (function PlayTime() {
     const PlayTimeAddTrigger = () => {
@@ -88,9 +92,16 @@ window.onload = function() {
   }());
 }
 
+// todo: Fix for reusing notification IDs
 function CreateNotification(msgid, msg) {
   const notification_area = document.getElementById("notification-area");
-  notification_area.insertAdjacentHTML("afterbegin", `<div class="notification" id='${msgid}'><span id="close-notification">x</span>${msg}</div>`);
+  notification_area.insertAdjacentHTML
+  (
+    "afterbegin", 
+    `<div class="notification" id='${msgid}'>
+      <span id="close-notification">x</span>${msg}
+    </div>`
+  );
   setTimeout(() => {
     const notification = document.getElementById(`${msgid}`);
     notification.remove();
