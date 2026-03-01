@@ -1,5 +1,5 @@
 import './style.css'
-import { MainButtonClick, GameDataRemove, GameDataSave, PlayTime } from './game.js'
+import { MainButtonClick, GameDataManage } from './game.js'
 
 document.querySelector('#app').innerHTML = `
   <header>
@@ -28,8 +28,6 @@ document.querySelector('#app').innerHTML = `
 `
 
 MainButtonClick(document.getElementById("main-button"));
-GameDataRemove(document.getElementById("game-data-remove-button"));
-GameDataSave(document.getElementById("game-data-save-button"));
-PlayTime();
+GameDataManage(document.getElementById("game-data-save-button"), document.getElementById("game-data-remove-button"));
 GameDataExport(document.getElementById("export-button"));
 GameDataImport(document.getElementById("game-data-save-button"));
