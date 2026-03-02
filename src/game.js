@@ -114,7 +114,7 @@ class Upgrade {
   PaymentCost() {
     const paymentCostTarget = document.getElementById(this.id);
     const PaymentCostTrigger = () => {
-      if (gameState.score >= this.cost && !gameState.boughtUpgrades.includes(this.id)) {
+      if (gameState.score >= this.cost) {
         gameState.score -= this.cost;
         gameState.cps += this.effect;
         updateDOM();
@@ -142,11 +142,9 @@ upgradeLoad("cps+1", "CPS +1", 100, 1, "CPS increases by 1.");
 upgradeLoad("cps+2", "CPS +2", 500, 2, "CPS increases by 2.");
 upgradeLoad("cps+3", "CPS +3", 1000, 3, "CPS increases by 3.");
 
-// todo: Fix for reusing notification IDs
 function createNotification(msg) {
-  const notification_area = document.getElementById("notification-area");
   const msgid = `notification-${Date.now()}`;
-  notification_area.insertAdjacentHTML
+  document.getElementById("notification-area").insertAdjacentHTML
   (
     "afterbegin", 
     `<div class="notification" id='${msgid}'>
@@ -161,11 +159,9 @@ function createNotification(msg) {
   const close_notification = document.querySelector(".close-notification");
   close_notification.addEventListener('click', () => {
     close_notification.parentNode.remove();
+    clearTimeout(notificationTimeout);
+  });
+}
   }
 }
 
-//function isMultipleOfTen(number) {
-//  if (number % 10 === 0) {
-//    console.log("level_up");
-//  }
-//}
