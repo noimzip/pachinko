@@ -8,7 +8,10 @@ const gameState = {
   },
   settings: {
     autosave: false
-  }
+  },
+  boughtUpgrades: [
+
+  ]
 };
 
 // DOM management functions
@@ -41,7 +44,7 @@ export function initializeDataManagement(saveButton, removeButton, autoSaveButto
     }
     updateDOM();
   }
-  window.addEventListener('load', loadGame);
+  window.addEventListener('DOMContentLoaded', loadGame);
 
   const saveGame = () => {
     localStorage.setItem('GameData', JSON.stringify(gameState));
@@ -85,8 +88,59 @@ export function initializeDataManagement(saveButton, removeButton, autoSaveButto
     updateDOM();
   }, 60000)
 }());
+
+class Upgrade {
+  constructor(id, name, cost, effect, description) {
+    this.id = id;
+    this.name = name;
+    this.cost = cost;
+    this.effect = effect;
+    this.description = description;
+  }
+  ApplyDOM() {
+    document.getElementById("upgrades-area").insertAdjacentHTML
+    (
+      "afterbegin",
+      `<div class="upgrade" id='${this.id}'>
+        <div class="upgrade-tooltip">
+          <div class="upgrade-name">${this.name}</div>
+          <div class="upgrade-cost">${this.cost} score</div>
+          <div class="upgrade-effect">+ ${this.effect} cps</div>
+          <div class="upgrade-description">${this.description}</div>
+        </div>
+      </div>`
+    );
+  }
+  PaymentCost() {
+    const paymentCostTarget = document.getElementById(this.id);
+    const PaymentCostTrigger = () => {
+      if (gameState.score >= this.cost && !gameState.boughtUpgrades.includes(this.id)) {
+        gameState.score -= this.cost;
+        gameState.cps += this.effect;
+        updateDOM();
+        paymentCostTarget.remove();
+        gameState.boughtUpgrades.push(this.id); 
+      } else {
+        createNotification("Lack of Score!");        
       }
+    }
+    paymentCostTarget.addEventListener('click', PaymentCostTrigger);
+  }
 }
+
+function upgradeLoad(id, name, cost, effect, description) {
+  window.addEventListener('load', () => {
+    if (!gameState.boughtUpgrades.includes(id)) {
+      const loadedUpgrade = new Upgrade(id, name, cost, effect, description);
+      loadedUpgrade.ApplyDOM();
+      loadedUpgrade.PaymentCost();
+    }
+  });
+}
+
+upgradeLoad("cps+1", "CPS +1", 100, 1, "CPS increases by 1.");
+upgradeLoad("cps+2", "CPS +2", 500, 2, "CPS increases by 2.");
+upgradeLoad("cps+3", "CPS +3", 1000, 3, "CPS increases by 3.");
 
 // todo: Fix for reusing notification IDs
 function createNotification(msg) {
