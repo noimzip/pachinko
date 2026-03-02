@@ -45,7 +45,7 @@ export function initializeDataManagement(saveButton, removeButton, autoSaveButto
 
   const saveGame = () => {
     localStorage.setItem('GameData', JSON.stringify(gameState));
-    createNotification("saved_dialog", "Saved.");
+    createNotification("Saved.");
   }
   saveButton.addEventListener('click', saveGame);
 
@@ -88,21 +88,22 @@ export function initializeDataManagement(saveButton, removeButton, autoSaveButto
 }
 
 // todo: Fix for reusing notification IDs
-function createNotification(msgid, msg) {
+function createNotification(msg) {
   const notification_area = document.getElementById("notification-area");
+  const msgid = `notification-${Date.now()}`;
   notification_area.insertAdjacentHTML
   (
     "afterbegin", 
     `<div class="notification" id='${msgid}'>
-      <span id="close-notification">x</span>${msg}
+      <span class="close-notification">x</span>${msg}
     </div>`
   );
-  setTimeout(() => {
-    const notification = document.getElementById(`${msgid}`);
+  const notificationTimeout = setTimeout(() => {
+    const notification = document.getElementById(msgid);
     notification.remove();
   }, 10000); 
   
-  const close_notification = document.getElementById("close-notification");
+  const close_notification = document.querySelector(".close-notification");
   close_notification.addEventListener('click', () => {
     close_notification.parentNode.remove();
   }

@@ -49,7 +49,7 @@ body {
   border-radius: 8px;
 }
 
-#close-notification {
+.close-notification {
   position: absolute;
   left: 0;
   margin-left: 10px;
