@@ -75,16 +75,17 @@ export function initializeDataManagement(saveButton, removeButton, autoSaveButto
   window.addEventListener('load', autoSaveGame);
 }
 
-  (function playTimer() {
-    setInterval(() => {
-      gameState.stats.minutes += 1;
-      if (gameState.stats.minutes % 60 == 0 && gameState.stats.minutes !== 0) {
-        gameState.stats.hours += 1;
-        gameState.stats.minutes = 0;
+(function playTimer() {
+  setInterval(() => {
+    gameState.stats.minutes += 1;
+    if (gameState.stats.minutes % 60 == 0 && gameState.stats.minutes !== 0) {
+      gameState.stats.hours += 1;
+      gameState.stats.minutes = 0;
+    }
+    updateDOM();
+  }, 60000)
+}());
       }
-      updateDOM();
-    }, 60000)
-  }());
 }
 
 // todo: Fix for reusing notification IDs
