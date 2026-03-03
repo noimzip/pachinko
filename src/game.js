@@ -16,9 +16,27 @@ const gameState = {
 
 // DOM management functions
 function updateDOM() {
-  document.getElementById("score-counter").innerHTML = `Count is ${gameState.score}`;
-  document.getElementById("overall-main-button-clicked-times").innerHTML = `Overall button click times: ${gameState.stats.totalClicks}`;
-  document.getElementById("overall-play-time").innerHTML = `Overall Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
+  try {
+    const scoreCounter = document.getElementById("score-counter");
+    if (!scoreCounter) throw new Error("score-counter 要素が見つかりません");
+    scoreCounter.innerHTML = `Count is ${gameState.score}`;
+  } catch (error) {
+    console.warn("DOM更新エラー:", error.message);
+  } 
+  try {
+    const overallMainButtonClickedTimes = document.getElementById("overall-main-button-clicked-times");
+    if (!overallMainButtonClickedTimes) throw new Error("overall-main-button-clicked-times 要素が見つかりません");
+    overallMainButtonClickedTimes.innerHTML = `Overall button click times: ${gameState.stats.totalClicks}`;
+  } catch (error) {
+    console.warn("DOM更新エラー:", error.message);
+  }
+  try {
+    const overallPlayTime = document.getElementById("overall-play-time");
+    if (!overallPlayTime) throw new Error("overall-play-time 要素が見つかりません");
+    overallPlayTime.innerHTML = `Overall Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
+  } catch (error) {
+    console.warn("DOM更新エラー:", error.message);
+  }
 }
 
 // Main button click processing
@@ -33,9 +51,14 @@ export function initializeMainButton(element) {
 // Data Management Functions (Save, Load, Data Deletion)
 export function initializeDataManagement(saveButton, removeButton, autoSaveButton) {
   const loadGame = () => {
-    const savedData = localStorage.getItem('GameData');
-    if (savedData) {
-      Object.assign(gameState, JSON.parse(savedData));
+    try {
+      const savedData = localStorage.getItem('GameData');
+      if (savedData) {
+        Object.assign(gameState, JSON.parse(savedData));
+      }
+    } catch (error) {
+      console.error("Failed to load game data:", error);
+      createNotification("Failed to load game data.");
     }
     if (gameState.settings.autosave) {
       document.getElementById("autosave-checkbox").checked = true;
@@ -47,8 +70,13 @@ export function initializeDataManagement(saveButton, removeButton, autoSaveButto
   window.addEventListener('DOMContentLoaded', loadGame);
 
   const saveGame = () => {
-    localStorage.setItem('GameData', JSON.stringify(gameState));
-    createNotification("Saved.");
+    try {
+      localStorage.setItem('GameData', JSON.stringify(gameState));
+      createNotification("Saved.");
+    } catch (error) {
+      console.error("Failed to save game data:", error);
+      createNotification("Failed to save game data.");
+    }
   }
   saveButton.addEventListener('click', saveGame);
 
