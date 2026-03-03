@@ -4,7 +4,8 @@ const gameState = {
   stats: {
     minutes: 0,
     hours: 0,
-    totalClicks: 0
+    totalClicks: 0,
+    totalScore: 0
   },
   settings: {
     autosave: false
@@ -31,6 +32,13 @@ function updateDOM() {
     console.warn("DOM更新エラー:", error.message);
   }
   try {
+    const overallTotalScore = document.getElementById("overall-total-score");
+    if (!overallTotalScore) throw new Error("overall-total-score 要素が見つかりません");
+    overallTotalScore.innerHTML = `Overall total score: ${gameState.stats.totalScore}`;
+  } catch (error) {
+    console.warn("DOM更新エラー:", error.message);
+  }
+  try {
     const overallPlayTime = document.getElementById("overall-play-time");
     if (!overallPlayTime) throw new Error("overall-play-time 要素が見つかりません");
     overallPlayTime.innerHTML = `Overall Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
@@ -43,6 +51,7 @@ function updateDOM() {
 export function initializeMainButton(element) {
   element.addEventListener('click', () => {
     gameState.score += gameState.cps;
+    gameState.stats.totalScore += gameState.cps;
     gameState.stats.totalClicks += 1;
     updateDOM();
   });

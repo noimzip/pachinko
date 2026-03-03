@@ -16,6 +16,7 @@ document.querySelector('#app').innerHTML = `
     <button id="main-button" type="button"></button>
     <div id="buttons" class="right bottom">
       <div id="overall-main-button-clicked-times"></div>
+      <div id="overall-total-score"></div>
       <div id="overall-play-time"></div>
       <label>AutoSave:<input id="autosave-checkbox" type="checkbox" checked></label>
       <button id="game-data-save-button" class="basic-button" type="button">Save</button>
