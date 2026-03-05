@@ -153,7 +153,7 @@ class Upgrade {
     const PaymentCostTrigger = () => {
       if (gameState.score >= this.cost) {
         gameState.score -= this.cost;
-        gameState.cps += this.effect;
+        this.effect();
         updateDOM();
         paymentCostTarget.remove();
         gameState.boughtUpgrades.push(this.id); 
@@ -175,9 +175,9 @@ function upgradeLoad(id, name, cost, effect, description) {
   });
 }
 
-upgradeLoad("cps+1", "CPS +1", 100, 1, "CPS increases by 1.");
-upgradeLoad("cps+2", "CPS +2", 500, 2, "CPS increases by 2.");
-upgradeLoad("cps+3", "CPS +3", 1000, 3, "CPS increases by 3.");
+upgradeLoad("cps+1", "CPS +1", 100, () => { gameState.cps += 1; }, "CPS increases by 1.");
+upgradeLoad("cps+2", "CPS +2", 500, () => { gameState.cps += 2; }, "CPS increases by 2.");
+upgradeLoad("cps+3", "CPS +3", 1000, () => { gameState.cps += 3; }, "CPS increases by 3.");
 
 function createNotification(msg) {
   const msgid = `notification-${Date.now()}`;
