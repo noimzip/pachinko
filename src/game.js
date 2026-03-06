@@ -126,6 +126,16 @@ export function initializeDataManagement(saveButton, removeButton, autoSaveButto
   }, 60000)
 }());
 
+export function unlockContent(lockedElement, costElement, requiredScore) {
+  const unlockContentCheck = () => {
+    if (gameState.stats.totalScore >= requiredScore) {
+      lockedElement.setAttribute("aria-disabled", "false");
+      costElement.remove();
+    }
+  }
+  window.addEventListener('load', unlockContentCheck);
+}
+
 class Upgrade {
   constructor(id, name, cost, effect, description) {
     this.id = id;

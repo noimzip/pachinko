@@ -108,6 +108,14 @@ button:focus-visible {
   position: absolute;
 }
 
+[aria-disabled="true"] {
+  color: GrayText;
+}
+
+#upgrade-cost {
+  font-size: 13px;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

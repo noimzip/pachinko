@@ -21,6 +21,7 @@ document.querySelector('#app').innerHTML = `
       <label>AutoSave:<input id="autosave-checkbox" type="checkbox" checked></label>
       <button id="game-data-save-button" class="basic-button" type="button">Save</button>
       <button id="game-status-button" class="basic-button" type="button">Status</button>
+      <button id="game-upgrades-button" class="basic-button" type="button" aria-disabled="true">Upgrades<div id="upgrade-cost">(Unlock: 100)</div></button>
       <button id="export-button" class="basic-button" type="button">Export</button>
       <button id="import-button" class="basic-button" type="button">Import</button>
     </div>
@@ -30,3 +31,4 @@ document.querySelector('#app').innerHTML = `
 
 initializeMainButton(document.getElementById("main-button"));
 initializeDataManagement(document.getElementById("game-data-save-button"), document.getElementById("game-data-remove-button"), document.getElementById("autosave-checkbox"));
+unlockContent(document.getElementById("game-upgrades-button"), document.getElementById("upgrade-cost"), 100);
