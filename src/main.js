@@ -7,7 +7,10 @@ document.querySelector('#app').innerHTML = `
     </div>
   </header>
   <div>
-    <div id="score-counter"></div>
+    <div id="header-stats-section">
+      <div id="score-counter"></div>
+      <div id="clicks-per-second"></div>
+    </div>
     <button id="main-button" type="button"></button>
     <div id="buttons" class="right bottom">
       <div id="main-button-clicked-times"></div>

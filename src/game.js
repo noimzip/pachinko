@@ -1,6 +1,7 @@
 const gameState = {
   score: 0,
   cps: 1,
+  clicksPerSecond: 0,
   stats: { minutes: 0, hours: 0, totalClicks: 0, totalScore: 0 },
   settings: { autosave: false },
   boughtUpgrades: [],
@@ -15,7 +16,7 @@ function updateDOM() {
     scoreCounter.innerHTML = `Score is ${gameState.score.toLocaleString()}`;
   } catch (error) {
     console.warn("DOM Update Error:", error.message);
-  } 
+  }
   try {
     const MainButtonClickedTimes = document.getElementById("main-button-clicked-times");
     if (!MainButtonClickedTimes) throw new Error("main-button-clicked-times Element not found");
@@ -45,10 +46,16 @@ export function initializeMainButton(element) {
     gameState.score += gameState.cps;
     gameState.stats.totalScore += gameState.cps;
     gameState.stats.totalClicks++;
+    gameState.clicksPerSecond++;
     updateDOM();
     floatcpsvalue(e);
   });
+  setInterval(() => {
+    document.getElementById("clicks-per-second").innerHTML = `Click(s) Per Second(CPS): ${gameState.clicksPerSecond}`;
+    gameState.clicksPerSecond = 0;
+  }, 1000);
 }
+
 
 function floatcpsvalue(e) {
   const msgid = `cps-float-value-${Date.now()}`;
