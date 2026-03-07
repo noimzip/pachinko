@@ -159,57 +159,60 @@ export function unlockContent(lockedElement, costElement, requiredScore) {
 }
 
 class Upgrade {
-  constructor(id, name, cost, effect, description) {
+  constructor(id, name, cost, effectformula, effectdescription, description) {
     this.id = id;
     this.name = name;
     this.cost = cost;
-    this.effect = effect;
+    this.effectformula = effectformula;
+    this.effectdescription = effectdescription;
     this.description = description;
   }
-  ApplyDOM() {
-    document.getElementById("upgrades-area").insertAdjacentHTML
-    (
-      "afterbegin",
-      `<div class="upgrade" id='${this.id}'>
+  applyDOM() {
+    document.getElementById("upgrades-area").insertAdjacentHTML("afterbegin", `
+      <div class="upgrade" id='${this.id}'>
         <div class="upgrade-tooltip">
           <div class="upgrade-name">${this.name}</div>
-          <div class="upgrade-cost">${this.cost} score</div>
-          <div class="upgrade-effect">+ ${this.effect} cps</div>
+          <div class="upgrade-cost">${this.cost.toLocaleString()} score</div>
+          <div class="upgrade-effect">${this.effectdescription}</div>
           <div class="upgrade-description">${this.description}</div>
         </div>
-      </div>`
-    );
+      </div>
+    `);
   }
-  PaymentCost() {
-    const paymentCostTarget = document.getElementById(this.id);
-    const PaymentCostTrigger = () => {
-      if (gameState.score >= this.cost) {
+  costRequirement() {
+    return gameState.score >= this.cost;
+  }
+  paymentCost() {
+    document.getElementById(this.id).addEventListener('click', () => {
+      if (this.costRequirement()) {
         gameState.score -= this.cost;
-        this.effect();
+        this.effectformula();
         updateDOM();
-        paymentCostTarget.remove();
-        gameState.boughtUpgrades.push(this.id); 
-      } else {
-        createNotification("Lack of Score!");        
-      }
-    }
-    paymentCostTarget.addEventListener('click', PaymentCostTrigger);
+        document.getElementById(this.id).remove();
+        gameState.boughtUpgrades.push(this.id);
+      } else createNotification("You don't have enough score!");
+    });
   }
 }
 
-function upgradeLoad(id, name, cost, effect, description) {
-  window.addEventListener('load', () => {
-    if (!gameState.boughtUpgrades.includes(id)) {
-      const loadedUpgrade = new Upgrade(id, name, cost, effect, description);
-      loadedUpgrade.ApplyDOM();
-      loadedUpgrade.PaymentCost();
+export function upgradeLoad(id, name, cost, effectformula, effectdescription, description) {
+  upgradesList.push(new Upgrade(id, name, cost, effectformula, effectdescription, description));
+}
+
+const upgradesList = [];
+
+function renderUpgrades() {
+  upgradesList.forEach(upgrade => {
+    if (!gameState.boughtUpgrades.includes(upgrade.id)) {
+      upgrade.applyDOM();
+      upgrade.paymentCost();
     }
   });
 }
 
-upgradeLoad("cps+1", "CPS +1", 100, () => { gameState.cps += 1; }, "CPS increases by 1.");
-upgradeLoad("cps+2", "CPS +2", 500, () => { gameState.cps += 2; }, "CPS increases by 2.");
-upgradeLoad("cps+3", "CPS +3", 1000, () => { gameState.cps += 3; }, "CPS increases by 3.");
+upgradeLoad("cps+1", "CPS +1", 100, () => { gameState.cps += 1; }, "CPS +1", "CPS increases by 1.");
+upgradeLoad("cps+2", "CPS +2", 500, () => { gameState.cps += 2; }, "CPS +2", "CPS increases by 2.");
+upgradeLoad("cps+3", "CPS +3", 1000, () => { gameState.cps += 3; }, "CPS +3", "CPS increases by 3.");
 
 function createNotification(msg) {
   const msgid = `notification-${Date.now()}`;
@@ -234,3 +237,20 @@ function createNotification(msg) {
   }
 }
 
+export function createModal(element, container) {
+  element.addEventListener('click', () => {
+    const foreground = document.getElementById("app");
+    foreground.insertAdjacentHTML("afterbegin", `
+      <div id="modal-background">
+        <div class="modal" id='${element.id}-modal'>
+          <span id="${element.id}-close-modal">x</span>${container}
+        </div>
+      </div>
+    `);
+
+    if (element.id === "game-upgrades-button") renderUpgrades();
+
+    const close_modal = document.getElementById(`${element.id}-close-modal`);
+    close_modal.addEventListener('click', () => document.getElementById(`${element.id}-modal`).parentNode.remove());
+  });
+}

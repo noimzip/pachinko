@@ -1,14 +1,9 @@
 import './style.css'
-import { initializeMainButton, initializeDataManagement } from './game.js'
+import { initializeMainButton, initializeDataManagement, unlockContent, createModal } from './game.js'
 
 document.querySelector('#app').innerHTML = `
   <header>
     <div id="notification-area">
-    </div>
-    <div id="upgrades-section">
-      <span class="section-title">Upgrades</span>
-      <div id="upgrades-area">
-      </div>
     </div>
   </header>
   <div>
@@ -32,3 +27,10 @@ document.querySelector('#app').innerHTML = `
 initializeMainButton(document.getElementById("main-button"));
 initializeDataManagement(document.getElementById("game-data-save-button"), document.getElementById("game-data-remove-button"), document.getElementById("autosave-checkbox"));
 unlockContent(document.getElementById("game-upgrades-button"), document.getElementById("upgrade-cost"), 100);
+createModal(document.getElementById("game-upgrades-button"), `
+    <div id="upgrades-section">
+      <span class="section-title">Upgrades</span>
+      <div id="upgrades-area">
+      </div>
+    </div>
+  `);
