@@ -40,6 +40,13 @@ function updateDOM() {
   }
 }
 
+function KeyboardShortcut(event, func, targetKey) {
+  if (event.key === targetKey) {
+    event.preventDefault();
+    func();
+  }
+}
+
 // Main button click processing
 export function initializeMainButton(element) {
   element.addEventListener('click', (e) => {
@@ -101,6 +108,7 @@ export function initializeDataManagement(saveButton, removeButton, autoSaveButto
     }
   }
   saveButton.addEventListener('click', saveGame);
+  window.addEventListener("keydown", (event) => KeyboardShortcut(event, saveGame, "s"));
 
   const resetGame = () => {
     if (confirm("Are you sure you want to reset?")) {
