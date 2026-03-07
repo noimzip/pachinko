@@ -19,31 +19,31 @@ const gameState = {
 function updateDOM() {
   try {
     const scoreCounter = document.getElementById("score-counter");
-    if (!scoreCounter) throw new Error("score-counter 要素が見つかりません");
-    scoreCounter.innerHTML = `Count is ${gameState.score}`;
+    if (!scoreCounter) throw new Error("score-counter Element not found");
+    scoreCounter.innerHTML = `Score is ${gameState.score.toLocaleString()}`;
   } catch (error) {
-    console.warn("DOM更新エラー:", error.message);
+    console.warn("DOM Update Error:", error.message);
   } 
   try {
-    const overallMainButtonClickedTimes = document.getElementById("overall-main-button-clicked-times");
-    if (!overallMainButtonClickedTimes) throw new Error("overall-main-button-clicked-times 要素が見つかりません");
-    overallMainButtonClickedTimes.innerHTML = `Overall button click times: ${gameState.stats.totalClicks}`;
+    const MainButtonClickedTimes = document.getElementById("main-button-clicked-times");
+    if (!MainButtonClickedTimes) throw new Error("main-button-clicked-times Element not found");
+    MainButtonClickedTimes.innerHTML = `Button clicks: ${gameState.stats.totalClicks.toLocaleString()}`;
   } catch (error) {
-    console.warn("DOM更新エラー:", error.message);
+    console.warn("DOM Update Error:", error.message);
   }
   try {
-    const overallTotalScore = document.getElementById("overall-total-score");
-    if (!overallTotalScore) throw new Error("overall-total-score 要素が見つかりません");
-    overallTotalScore.innerHTML = `Overall total score: ${gameState.stats.totalScore}`;
+    const TotalScore = document.getElementById("totalscore");
+    if (!TotalScore) throw new Error("totalscore Element not found");
+    TotalScore.innerHTML = `Total score: ${gameState.stats.totalScore.toLocaleString()}`;
   } catch (error) {
-    console.warn("DOM更新エラー:", error.message);
+    console.warn("DOM Update Error:", error.message);
   }
   try {
-    const overallPlayTime = document.getElementById("overall-play-time");
-    if (!overallPlayTime) throw new Error("overall-play-time 要素が見つかりません");
-    overallPlayTime.innerHTML = `Overall Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
+    const PlayTime = document.getElementById("playtime");
+    if (!PlayTime) throw new Error("playtime Element not found");
+    PlayTime.innerHTML = `Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
   } catch (error) {
-    console.warn("DOM更新エラー:", error.message);
+    console.warn("DOM Update Error:", error.message);
   }
 }
 
@@ -114,10 +114,8 @@ export function initializeDataManagement(saveButton, removeButton, autoSaveButto
   saveButton.addEventListener('click', saveGame);
 
   const resetGame = () => {
-    const GameDataRemoveConfirm = confirm("本当にリセットしますか?");
-    if (GameDataRemoveConfirm) {
-      const SecondFactorGameDataRemoveConfirm = confirm("本当に本当にリセットしますか?");
-      if (SecondFactorGameDataRemoveConfirm) {
+    if (confirm("Are you sure you want to reset?")) {
+      if (confirm("Do you truly, truly want to reset? This action cannot be undone.")) {
         localStorage.removeItem('GameData');
         location.reload();
       }
