@@ -49,12 +49,36 @@ function updateDOM() {
 
 // Main button click processing
 export function initializeMainButton(element) {
-  element.addEventListener('click', () => {
+  element.addEventListener('click', (e) => {
     gameState.score += gameState.cps;
     gameState.stats.totalScore += gameState.cps;
     gameState.stats.totalClicks += 1;
     updateDOM();
+    floatcpsvalue(e);
   });
+}
+
+function floatcpsvalue(e) {
+  const msgid = `cps-float-value-${Date.now()}`;
+  const x = e.clientX;
+  const y = e.clientY;
+
+  document.getElementById("app").insertAdjacentHTML
+  (
+    "afterbegin", 
+    `<div class="floating-cps" id='${msgid}'>+${gameState.cps}</div>`
+  );
+
+  const floatcpsElement = document.getElementById(msgid);
+  floatcpsElement.style.position = 'absolute';
+  floatcpsElement.style.pointerEvents = 'none';
+  floatcpsElement.style.left = x - 10 + 'px';
+  floatcpsElement.style.top = y - 10 + 'px';
+  floatcpsElement.style.animation = 'floatWord 5s forwards linear';
+
+  setTimeout(() => {
+    floatcpsElement.remove();
+  }, 5000); 
 }
 
 // Data Management Functions (Save, Load, Data Deletion)

@@ -116,6 +116,13 @@ button:focus-visible {
   font-size: 13px;
 }
 
+@keyframes floatWord {
+  100% {
+    margin-top: -200px;
+    opacity: 0;
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
