@@ -1,18 +1,10 @@
 const gameState = {
   score: 0,
   cps: 1,
-  stats: {
-    minutes: 0,
-    hours: 0,
-    totalClicks: 0,
-    totalScore: 0
-  },
-  settings: {
-    autosave: false
-  },
-  boughtUpgrades: [
-
-  ]
+  stats: { minutes: 0, hours: 0, totalClicks: 0, totalScore: 0 },
+  settings: { autosave: false },
+  boughtUpgrades: [],
+  unlockedAchievements: []
 };
 
 // DOM management functions
@@ -52,7 +44,7 @@ export function initializeMainButton(element) {
   element.addEventListener('click', (e) => {
     gameState.score += gameState.cps;
     gameState.stats.totalScore += gameState.cps;
-    gameState.stats.totalClicks += 1;
+    gameState.stats.totalClicks++;
     updateDOM();
     floatcpsvalue(e);
   });
@@ -63,11 +55,9 @@ function floatcpsvalue(e) {
   const x = e.clientX;
   const y = e.clientY;
 
-  document.getElementById("app").insertAdjacentHTML
-  (
-    "afterbegin", 
-    `<div class="floating-cps" id='${msgid}'>+${gameState.cps}</div>`
-  );
+  document.getElementById("app").insertAdjacentHTML("afterbegin", `
+    <div class="floating-cps" id='${msgid}'>+${gameState.cps}</div>
+  `);
 
   const floatcpsElement = document.getElementById(msgid);
   floatcpsElement.style.position = 'absolute';
@@ -76,9 +66,7 @@ function floatcpsvalue(e) {
   floatcpsElement.style.top = y - 10 + 'px';
   floatcpsElement.style.animation = 'floatWord 5s forwards linear';
 
-  setTimeout(() => {
-    floatcpsElement.remove();
-  }, 5000); 
+  setTimeout(() => floatcpsElement.remove(), 5000); 
 }
 
 // Data Management Functions (Save, Load, Data Deletion)
@@ -86,18 +74,12 @@ export function initializeDataManagement(saveButton, removeButton, autoSaveButto
   const loadGame = () => {
     try {
       const savedData = localStorage.getItem('GameData');
-      if (savedData) {
-        Object.assign(gameState, JSON.parse(savedData));
-      }
+      if (savedData) Object.assign(gameState, JSON.parse(savedData));
     } catch (error) {
       console.error("Failed to load game data:", error);
       createNotification("Failed to load game data.");
     }
-    if (gameState.settings.autosave) {
-      document.getElementById("autosave-checkbox").checked = true;
-    } else {
-      document.getElementById("autosave-checkbox").checked = false;
-    }
+    (gameState.settings.autosave) ? document.getElementById("autosave-checkbox").checked = true : document.getElementById("autosave-checkbox").checked = false;
     updateDOM();
   }
   window.addEventListener('DOMContentLoaded', loadGame);
@@ -125,6 +107,8 @@ export function initializeDataManagement(saveButton, removeButton, autoSaveButto
 
   let autoSaveInterval;
   const autoSaveGame = () => {
+    if (autoSaveInterval) clearInterval(autoSaveInterval);
+
     if (autoSaveButton.checked) {
       autoSaveInterval = setInterval(saveGame, 60000);
       gameState.settings.autosave = true;
@@ -149,13 +133,12 @@ export function initializeDataManagement(saveButton, removeButton, autoSaveButto
 }());
 
 export function unlockContent(lockedElement, costElement, requiredScore) {
-  const unlockContentCheck = () => {
+  window.addEventListener('load', () => {
     if (gameState.stats.totalScore >= requiredScore) {
       lockedElement.setAttribute("aria-disabled", "false");
       costElement.remove();
     }
-  }
-  window.addEventListener('load', unlockContentCheck);
+  });
 }
 
 class Upgrade {
@@ -216,18 +199,13 @@ upgradeLoad("cps+3", "CPS +3", 1000, () => { gameState.cps += 3; }, "CPS +3", "C
 
 function createNotification(msg) {
   const msgid = `notification-${Date.now()}`;
-  document.getElementById("notification-area").insertAdjacentHTML
-  (
-    "afterbegin", 
-    `<div class="notification" id='${msgid}'>
+  document.getElementById("notification-area").insertAdjacentHTML("afterbegin", `
+    <div class="notification" id='${msgid}'>
       <span class="close-notification">x</span>${msg}
-    </div>`
-  );
-  const notificationTimeout = setTimeout(() => {
-    const notification = document.getElementById(msgid);
-    notification.remove();
-  }, 10000); 
-  
+    </div>
+  `);
+  const notificationTimeout = setTimeout(() => document.getElementById(msgid).remove(), 10000);
+
   const close_notification = document.querySelector(".close-notification");
   close_notification.addEventListener('click', () => {
     close_notification.parentNode.remove();
