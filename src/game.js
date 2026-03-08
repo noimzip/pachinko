@@ -69,9 +69,12 @@ function floatcpsvalue(e) {
   const x = e.clientX;
   const y = e.clientY;
 
-  document.getElementById("app").insertAdjacentHTML("afterbegin", `
-    <div class="floating-cps" id='${msgid}'>+${gameState.cps}</div>
-  `);
+  const foreground = document.getElementById("app");
+  const div = document.createElement("div");
+  div.className = "floating-cps";
+  div.id = msgid;
+  div.textContent = `+${gameState.cps}`;
+  foreground.appendChild(div);
 
   const floatcpsElement = document.getElementById(msgid);
   floatcpsElement.style.position = 'absolute';
