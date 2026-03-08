@@ -108,7 +108,7 @@ export function initializeDataManagement(saveButton, removeButton, autoSaveButto
     }
   }
   saveButton.addEventListener('click', saveGame);
-  window.addEventListener("keydown", (event) => KeyboardShortcut(event, saveGame, "s"));
+  window.addEventListener("keydown", (event) => KeyboardShortcut(event, saveGame, "ctrlKey" && "s"));
 
   const resetGame = () => {
     if (confirm("Are you sure you want to reset?")) {
@@ -227,7 +227,33 @@ function createNotification(msg) {
     clearTimeout(notificationTimeout);
   });
 }
+
+export function GameDataExport(element) {
+  const GameDataExportTrigger = () => {
+    const blob = new Blob([btoa(JSON.stringify(gameState))], { type: 'text/plain' });
+
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'gamedata.txt';
+    a.click();
   }
+  element.addEventListener('click', GameDataExportTrigger);
+  window.addEventListener("keydown", (event) => KeyboardShortcut(event, GameDataExportTrigger, "ctrlKey" && "e"));
+}
+
+export function GameDataImport(element) {
+  const GameDataImportTrigger = (ev) => {
+    const file = ev.target.files;
+    const reader = new FileReader();
+    reader.readAsText(file[0]);
+
+    reader.onload = function() {
+      Object.assign(gameState, JSON.parse(atob(reader.result)));
+      updateDOM();
+    }
+  }
+  element.addEventListener("change", GameDataImportTrigger);
+  window.addEventListener("keydown", (event) => KeyboardShortcut(event, GameDataImportTrigger, "ctrlKey" && "i"));
 }
 
 export function createModal(element, container) {

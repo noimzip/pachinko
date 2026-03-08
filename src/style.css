@@ -34,10 +34,13 @@ body {
   top: 150px;
   left: 0;
   width: 100%;
-  font-size: 24px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 26px;
 }
 
 #clicks-per-second {
+  margin-top: 5px;
   font-size: 14px;
 }
 
@@ -63,14 +66,14 @@ body {
   position: absolute;
   top: 0;
   height: 10%;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .notification {
   margin-top: 10px;
   padding: 2.5px;
-  padding-left: 60px;
-  padding-right: 60px;
+  padding-left: 100px;
+  padding-right: 100px;
   color: #fff;
   background-color: #1a1a1a;
   border-radius: 8px;
@@ -84,13 +87,15 @@ body {
 }
 
 #main-button {
+  padding: 6.5em 6.5em;
   border-radius: 50%;
 }
 
-button {
+button,
+.basic-button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 6.5em 6.5em;
+  padding: 1em 1.25em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -98,12 +103,9 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
+button:hover,
+.basic-button:hover {
   border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
 .left {
@@ -121,10 +123,6 @@ button:focus-visible {
   margin-bottom: 10px;
 }
 
-.basic-button {
-  padding: 1em 1.25em;
-}
-
 #buttons {
   position: absolute;
   display: flex;
@@ -139,8 +137,8 @@ button:focus-visible {
   color: GrayText;
 }
 
-#upgrade-cost {
-  font-size: 13px;
+.explain-sentence {
+  font-size: 11px;
 }
 
 @keyframes floatWord {
@@ -155,12 +153,16 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
-  button {
+
+  button,
+  .basic-button {
     background-color: #f9f9f9;
   }
+
   .notification {
     background-color: #f9f9f9;
     color: #000;
