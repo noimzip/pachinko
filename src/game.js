@@ -13,28 +13,28 @@ function updateDOM() {
   try {
     const scoreCounter = document.getElementById("score-counter");
     if (!scoreCounter) throw new Error("score-counter Element not found");
-    scoreCounter.innerHTML = `Score is ${gameState.score.toLocaleString()}`;
+    scoreCounter.textContent = `Score is ${gameState.score.toLocaleString()}`;
   } catch (error) {
     console.warn("DOM Update Error:", error.message);
   }
   try {
     const MainButtonClickedTimes = document.getElementById("main-button-clicked-times");
     if (!MainButtonClickedTimes) throw new Error("main-button-clicked-times Element not found");
-    MainButtonClickedTimes.innerHTML = `Button clicks: ${gameState.stats.totalClicks.toLocaleString()}`;
+    MainButtonClickedTimes.textContent = `Button clicks: ${gameState.stats.totalClicks.toLocaleString()}`;
   } catch (error) {
     console.warn("DOM Update Error:", error.message);
   }
   try {
     const TotalScore = document.getElementById("totalscore");
     if (!TotalScore) throw new Error("totalscore Element not found");
-    TotalScore.innerHTML = `Total score: ${gameState.stats.totalScore.toLocaleString()}`;
+    TotalScore.textContent = `Total score: ${gameState.stats.totalScore.toLocaleString()}`;
   } catch (error) {
     console.warn("DOM Update Error:", error.message);
   }
   try {
     const PlayTime = document.getElementById("playtime");
     if (!PlayTime) throw new Error("playtime Element not found");
-    PlayTime.innerHTML = `Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
+    PlayTime.textContent = `Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
   } catch (error) {
     console.warn("DOM Update Error:", error.message);
   }
@@ -58,7 +58,7 @@ export function initializeMainButton(element) {
     floatcpsvalue(e);
   });
   setInterval(() => {
-    document.getElementById("clicks-per-second").innerHTML = `Click(s) Per Second(CPS): ${gameState.clicksPerSecond}`;
+    document.getElementById("clicks-per-second").textContent = `Click(s) Per Second(CPS): ${gameState.clicksPerSecond}`;
     gameState.clicksPerSecond = 0;
   }, 1000);
 }
@@ -166,16 +166,37 @@ class Upgrade {
     this.description = description;
   }
   applyDOM() {
-    document.getElementById("upgrades-area").insertAdjacentHTML("afterbegin", `
-      <div class="upgrade" id='${this.id}'>
-        <div class="upgrade-tooltip">
-          <div class="upgrade-name">${this.name}</div>
-          <div class="upgrade-cost">${this.cost.toLocaleString()} score</div>
-          <div class="upgrade-effect">${this.effectdescription}</div>
-          <div class="upgrade-description">${this.description}</div>
-        </div>
-      </div>
-    `);
+    const upgradesArea = document.getElementById("upgrades-area");
+  
+    const upgrade = document.createElement("div");
+    upgrade.className = "upgrade";
+    upgrade.id = this.id;
+  
+    const tooltip = document.createElement("div");
+    tooltip.className = "upgrade-tooltip";
+
+    const upgradeName = document.createElement("div");
+    upgradeName.className = "upgrade-name";
+    upgradeName.textContent = this.name;
+
+    const upgradeCost = document.createElement("div");
+    upgradeCost.className = "upgrade-cost";
+    upgradeCost.textContent = `${this.cost.toLocaleString()} score`;
+
+    const upgradeEffect = document.createElement("div");
+    upgradeEffect.className = "upgrade-effect";
+    upgradeEffect.textContent = this.effectdescription;
+
+    const upgradeDescription = document.createElement("div");
+    upgradeDescription.className = "upgrade-description";
+    upgradeDescription.textContent = this.description;
+
+    tooltip.appendChild(upgradeName);
+    tooltip.appendChild(upgradeCost);
+    tooltip.appendChild(upgradeEffect);
+    tooltip.appendChild(upgradeDescription);
+    upgrade.appendChild(tooltip);
+    upgradesArea.prepend(upgrade);
   }
   costRequirement() {
     return gameState.score >= this.cost;
@@ -214,11 +235,21 @@ upgradeLoad("cps+3", "CPS +3", 1000, () => { gameState.cps += 3; }, "CPS +3", "C
 
 function createNotification(msg) {
   const msgid = `notification-${Date.now()}`;
-  document.getElementById("notification-area").insertAdjacentHTML("afterbegin", `
-    <div class="notification" id='${msgid}'>
-      <span class="close-notification">x</span>${msg}
-    </div>
-  `);
+  const notificationArea = document.getElementById("notification-area");
+  
+  const div = document.createElement("div");
+  div.className = "notification";
+  div.id = msgid;
+  
+  div.textContent = msg; 
+  
+  const closeBtn = document.createElement("span");
+  closeBtn.className = "close-notification";
+  closeBtn.textContent = "x";
+  div.prepend(closeBtn);
+  
+  notificationArea.prepend(div);
+
   const notificationTimeout = setTimeout(() => document.getElementById(msgid).remove(), 10000);
 
   const close_notification = document.querySelector(".close-notification");
@@ -259,13 +290,23 @@ export function GameDataImport(element) {
 export function createModal(element, container) {
   element.addEventListener('click', () => {
     const foreground = document.getElementById("app");
-    foreground.insertAdjacentHTML("afterbegin", `
-      <div id="modal-background">
-        <div class="modal" id='${element.id}-modal'>
-          <span id="${element.id}-close-modal">x</span>${container}
-        </div>
-      </div>
-    `);
+
+    const modal_background = document.createElement("div");
+    modal_background.id = "modal-background";
+  
+    const modal = document.createElement("div");
+    modal.className = "modal";
+    modal.id = `${element.id}-modal`;
+  
+    modal.innerHTML = container; 
+  
+    const closeBtn = document.createElement("span");
+    closeBtn.id = `${element.id}-close-modal`;
+    closeBtn.textContent = "x";
+  
+    foreground.prepend(modal_background);
+    modal_background.prepend(modal);
+    modal.prepend(closeBtn);
 
     if (element.id === "game-upgrades-button") renderUpgrades();
 
