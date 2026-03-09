@@ -47,43 +47,77 @@ function KeyboardShortcut(event, func, targetKey) {
   }
 }
 
-// Main button click processing
-export function initializeMainButton(element) {
-  element.addEventListener('click', (e) => {
+export class MainButtonModel {
+  static gameDataProcess() {
     gameState.score += gameState.cps;
     gameState.stats.totalScore += gameState.cps;
     gameState.stats.totalClicks++;
     gameState.clicksPerSecond++;
-    updateDOM();
-    floatcpsvalue(e);
-  });
-  setInterval(() => {
-    document.getElementById("clicks-per-second").textContent = `Click(s) Per Second(CPS): ${gameState.clicksPerSecond}`;
+  }
+  static resetCPS() {
     gameState.clicksPerSecond = 0;
-  }, 1000);
+  }
 }
 
+export class MainButtonView {
+  static #updateTextContent(elementId, text) {
+    try {
+      const element = document.getElementById(elementId);
+      if (!element) throw new Error(`${elementId} Element not found`);
+      element.textContent = text;
+    } catch (error) {
+      console.warn("DOM Update Error:", error.message);
+    }
+  }
+  static ApplyDOM() {
+    this.#updateTextContent("score-counter", `Score is ${gameState.score.toLocaleString()}`);
+    this.#updateTextContent("main-button-clicked-times", `Button clicks: ${gameState.stats.totalClicks.toLocaleString()}`);
+    this.#updateTextContent("totalscore", `Total score: ${gameState.stats.totalScore.toLocaleString()}`);
+  }
+  static clicksPerSeccondApplyDOM() {
+    this.#updateTextContent("clicks-per-second", `Click(s) Per Second(CPS): ${gameState.clicksPerSecond}`);
+  }
+  static floatCPSValue(event) {
+    const msgid = `cps-float-value-${Date.now()}`;
+    const x = event.clientX;
+    const y = event.clientY;
 
-function floatcpsvalue(e) {
-  const msgid = `cps-float-value-${Date.now()}`;
-  const x = e.clientX;
-  const y = e.clientY;
+    const foreground = document.getElementById("app");
+    const div = document.createElement("div");
+    div.className = "floating-cps";
+    div.id = msgid;
+    div.textContent = `+${gameState.cps}`;
+    foreground.appendChild(div);
 
-  const foreground = document.getElementById("app");
-  const div = document.createElement("div");
-  div.className = "floating-cps";
-  div.id = msgid;
-  div.textContent = `+${gameState.cps}`;
-  foreground.appendChild(div);
+    const floatcpsElement = document.getElementById(msgid);
+    floatcpsElement.style.position = 'absolute';
+    floatcpsElement.style.pointerEvents = 'none';
+    floatcpsElement.style.left = x - 10 + 'px';
+    floatcpsElement.style.top = y - 10 + 'px';
+    floatcpsElement.style.animation = 'floatWord 5s forwards linear';
 
-  const floatcpsElement = document.getElementById(msgid);
-  floatcpsElement.style.position = 'absolute';
-  floatcpsElement.style.pointerEvents = 'none';
-  floatcpsElement.style.left = x - 10 + 'px';
-  floatcpsElement.style.top = y - 10 + 'px';
-  floatcpsElement.style.animation = 'floatWord 5s forwards linear';
+    setTimeout(() => floatcpsElement.remove(), 5000); 
+  }
+}
 
-  setTimeout(() => floatcpsElement.remove(), 5000); 
+export class MainButtonController {
+  constructor(model, view) {
+    this.model = model;
+    this.view = view;
+  }
+  #handleClick() {
+    this.model.gameDataProcess();
+    this.view.ApplyDOM();
+    this.view.floatCPSValue(event);
+  }
+
+  init(element) {
+    element.addEventListener('click', () => this.#handleClick());
+    setInterval(() => {
+      this.view.clicksPerSeccondApplyDOM();
+      this.model.resetCPS();
+    }, 1000);
+  }
 }
 
 // Data Management Functions (Save, Load, Data Deletion)

@@ -1,5 +1,5 @@
 import './style.css'
-import { initializeMainButton, initializeDataManagement, GameDataExport, GameDataImport, unlockContent, createModal } from './game.js'
+import { initializeDataManagement, GameDataExport, GameDataImport, unlockContent, createModal, MainButtonModel, MainButtonView, MainButtonController } from './game.js'
 
 document.querySelector('#app').innerHTML = `
   <header>
@@ -30,7 +30,8 @@ document.querySelector('#app').innerHTML = `
   </div>
 `
 
-initializeMainButton(document.getElementById("main-button"));
+const mainButtonController = new MainButtonController(MainButtonModel, MainButtonView);
+mainButtonController.init(document.getElementById("main-button"));
 initializeDataManagement(document.getElementById("game-data-save-button"), document.getElementById("game-data-remove-button"), document.getElementById("autosave-checkbox"));
 GameDataExport(document.getElementById("export-button"));
 GameDataImport(document.getElementById("import-button"));
