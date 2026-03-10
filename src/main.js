@@ -1,5 +1,5 @@
 import './style.css'
-import { initializeDataManagement, GameDataExport, GameDataImport, unlockContent, createModal, MainButtonModel, MainButtonView, MainButtonController } from './game.js'
+import { gameDataExport, gameDataImport, unlockContent, createModal, keyboardShortcut, MainButtonModel, MainButtonView, MainButtonController, DataManagementModel, DataManagementView, DataManagementController } from './game.js'
 
 document.querySelector('#app').innerHTML = `
   <header>
@@ -29,12 +29,18 @@ document.querySelector('#app').innerHTML = `
     <button id="game-data-remove-button" class="basic-button left bottom" type="button">Reset</button>
   </div>
 `
+const dataManagementController = new DataManagementController(DataManagementModel, DataManagementView);
+window.addEventListener('DOMContentLoaded', dataManagementController.loadGame());
+//window.addEventListener("keydown", (event) => keyboardShortcut(event, dataManagementController.saveGame(), "ctrlKey" && "s"));
+dataManagementController.saveGame(document.getElementById("game-data-save-button"));
+dataManagementController.resetGame(document.getElementById("game-data-remove-button"));
+dataManagementController.autoSaveGame(document.getElementById("autosave-checkbox"));
 
 const mainButtonController = new MainButtonController(MainButtonModel, MainButtonView);
 mainButtonController.init(document.getElementById("main-button"));
-initializeDataManagement(document.getElementById("game-data-save-button"), document.getElementById("game-data-remove-button"), document.getElementById("autosave-checkbox"));
-GameDataExport(document.getElementById("export-button"));
-GameDataImport(document.getElementById("import-button"));
+
+gameDataExport(document.getElementById("export-button"));
+gameDataImport(document.getElementById("import-button"));
 unlockContent(document.getElementById("game-upgrades-button"), document.getElementById("upgrade-cost"), 100);
 createModal(document.getElementById("game-upgrades-button"), `
     <div id="upgrades-section">

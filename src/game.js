@@ -120,57 +120,79 @@ export class MainButtonController {
   }
 }
 
-// Data Management Functions (Save, Load, Data Deletion)
-export function initializeDataManagement(saveButton, removeButton, autoSaveButton) {
-  const loadGame = () => {
-    try {
-      const savedData = localStorage.getItem('GameData');
-      if (savedData) Object.assign(gameState, JSON.parse(savedData));
-    } catch (error) {
-      console.error("Failed to load game data:", error);
-      createNotification("Failed to load game data.");
-    }
-    (gameState.settings.autosave) ? document.getElementById("autosave-checkbox").checked = true : document.getElementById("autosave-checkbox").checked = false;
-    updateDOM();
+export class DataManagementModel {
+  static loadGame() {
+    const savedData = localStorage.getItem('GameData');
+    if (savedData) Object.assign(gameState, JSON.parse(savedData));
   }
-  window.addEventListener('DOMContentLoaded', loadGame);
+  static saveGame() {
+    localStorage.setItem('GameData', JSON.stringify(gameState));
+    createNotification("Saved.");
+  }
+  static resetGame() {
+    localStorage.removeItem('GameData');
+    location.reload();
+  }
+  static autoSaveGame() {
 
-  const saveGame = () => {
+  }
+}
+
+export class DataManagementView {
+  static errorText(error, gameDataProcessState) {
+    console.error(`Failed to ${gameDataProcessState} game data:`, error);
+    createNotification(`Failed to ${gameDataProcessState} game data.`);
+  }
+}
+
+export class DataManagementController {
+  constructor(model, view) {
+    this.model = model;
+    this.view = view;
+    this.autoSaveInterval = null;
+  }
+
+  loadGame() {
     try {
-      localStorage.setItem('GameData', JSON.stringify(gameState));
-      createNotification("Saved.");
+      this.model.loadGame();
+      (gameState.settings.autosave) ? document.getElementById("autosave-checkbox").checked = true : document.getElementById("autosave-checkbox").checked = false;
+      updateDOM();
     } catch (error) {
-      console.error("Failed to save game data:", error);
-      createNotification("Failed to save game data.");
+      this.view.errorText(error, "load");
     }
   }
-  saveButton.addEventListener('click', saveGame);
-  window.addEventListener("keydown", (event) => KeyboardShortcut(event, saveGame, "ctrlKey" && "s"));
 
-  const resetGame = () => {
-    if (confirm("Are you sure you want to reset?")) {
-      if (confirm("Do you truly, truly want to reset? This action cannot be undone.")) {
-        localStorage.removeItem('GameData');
-        location.reload();
+  saveGame(element) {
+    try {
+      element.addEventListener('click', () => this.model.saveGame());
+    } catch (error) {
+      this.view.errorText(error, "save");
+    }
+  }
+
+  resetGame(element) {
+    element.addEventListener('click', () => {
+      if (confirm("Are you sure you want to reset?") && confirm("Do you truly, truly want to reset? This action cannot be undone.")) {
+        this.model.resetGame();
+      }
+    });
+  }
+
+  autoSaveGame(element) {
+    const autoSaveGameTrigger = () => {
+      if (this.autoSaveInterval) clearInterval(this.autoSaveInterval);
+
+      if (element.checked) {
+        this.autoSaveInterval = setInterval(this.model.saveGame, 60000);
+        gameState.settings.autosave = true;
+      } else {
+        clearInterval(this.autoSaveInterval);
+        gameState.settings.autosave = false;
       }
     }
+    element.addEventListener('change', autoSaveGameTrigger);
+    window.addEventListener('load', autoSaveGameTrigger);
   }
-  removeButton.addEventListener('click', resetGame);
-
-  let autoSaveInterval;
-  const autoSaveGame = () => {
-    if (autoSaveInterval) clearInterval(autoSaveInterval);
-
-    if (autoSaveButton.checked) {
-      autoSaveInterval = setInterval(saveGame, 60000);
-      gameState.settings.autosave = true;
-    } else {
-      clearInterval(autoSaveInterval);
-      gameState.settings.autosave = false;
-    }
-  }
-  autoSaveButton.addEventListener('click', autoSaveGame);
-  window.addEventListener('load', autoSaveGame);
 }
 
 (function playTimer() {
