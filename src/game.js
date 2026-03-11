@@ -54,13 +54,13 @@ export class MainButtonModel {
     gameState.stats.totalClicks++;
     gameState.clicksPerSecond++;
   }
-  static resetCPS() {
+  resetCPS() {
     gameState.clicksPerSecond = 0;
   }
 }
 
 export class MainButtonView {
-  static #updateTextContent(elementId, text) {
+  #updateTextContent(elementId, text) {
     try {
       const element = document.getElementById(elementId);
       if (!element) throw new Error(`${elementId} Element not found`);
@@ -69,15 +69,15 @@ export class MainButtonView {
       console.warn("DOM Update Error:", error.message);
     }
   }
-  static ApplyDOM() {
+  ApplyDOM() {
     this.#updateTextContent("score-counter", `Score is ${gameState.score.toLocaleString()}`);
     this.#updateTextContent("main-button-clicked-times", `Button clicks: ${gameState.stats.totalClicks.toLocaleString()}`);
     this.#updateTextContent("totalscore", `Total score: ${gameState.stats.totalScore.toLocaleString()}`);
   }
-  static clicksPerSeccondApplyDOM() {
+  clicksPerSeccondApplyDOM() {
     this.#updateTextContent("clicks-per-second", `Click(s) Per Second(CPS): ${gameState.clicksPerSecond}`);
   }
-  static floatCPSValue(event) {
+  floatCPSValue(event) {
     const msgid = `cps-float-value-${Date.now()}`;
     const x = event.clientX;
     const y = event.clientY;
@@ -121,15 +121,15 @@ export class MainButtonController {
 }
 
 export class DataManagementModel {
-  static loadGame() {
+  loadGame() {
     const savedData = localStorage.getItem('GameData');
     if (savedData) Object.assign(gameState, JSON.parse(savedData));
   }
-  static saveGame() {
+  saveGame() {
     localStorage.setItem('GameData', JSON.stringify(gameState));
     createNotification("Saved.");
   }
-  static resetGame() {
+  resetGame() {
     localStorage.removeItem('GameData');
     location.reload();
   }
@@ -139,7 +139,7 @@ export class DataManagementModel {
 }
 
 export class DataManagementView {
-  static errorText(error, gameDataProcessState) {
+  errorText(error, gameDataProcessState) {
     console.error(`Failed to ${gameDataProcessState} game data:`, error);
     createNotification(`Failed to ${gameDataProcessState} game data.`);
   }

@@ -29,14 +29,14 @@ document.querySelector('#app').innerHTML = `
     <button id="game-data-remove-button" class="basic-button left bottom" type="button">Reset</button>
   </div>
 `
-const dataManagementController = new DataManagementController(DataManagementModel, DataManagementView);
+const dataManagementController = new DataManagementController(new DataManagementModel(), new DataManagementView());
 window.addEventListener('DOMContentLoaded', dataManagementController.loadGame());
 //window.addEventListener("keydown", (event) => keyboardShortcut(event, dataManagementController.saveGame(), "ctrlKey" && "s"));
 dataManagementController.saveGame(document.getElementById("game-data-save-button"));
 dataManagementController.resetGame(document.getElementById("game-data-remove-button"));
 dataManagementController.autoSaveGame(document.getElementById("autosave-checkbox"));
 
-const mainButtonController = new MainButtonController(MainButtonModel, MainButtonView);
+const mainButtonController = new MainButtonController(new MainButtonModel(), new MainButtonView());
 mainButtonController.init(document.getElementById("main-button"));
 
 gameDataExport(document.getElementById("export-button"));
