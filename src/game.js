@@ -18,29 +18,29 @@ function updateDOM() {
     console.warn("DOM Update Error:", error.message);
   }
   try {
-    const MainButtonClickedTimes = document.getElementById("main-button-clicked-times");
-    if (!MainButtonClickedTimes) throw new Error("main-button-clicked-times Element not found");
-    MainButtonClickedTimes.textContent = `Button clicks: ${gameState.stats.totalClicks.toLocaleString()}`;
+    const mainButtonClickedTimes = document.getElementById("main-button-clicked-times");
+    if (!mainButtonClickedTimes) throw new Error("main-button-clicked-times Element not found");
+    mainButtonClickedTimes.textContent = `Button clicks: ${gameState.stats.totalClicks.toLocaleString()}`;
   } catch (error) {
     console.warn("DOM Update Error:", error.message);
   }
   try {
-    const TotalScore = document.getElementById("totalscore");
-    if (!TotalScore) throw new Error("totalscore Element not found");
-    TotalScore.textContent = `Total score: ${gameState.stats.totalScore.toLocaleString()}`;
+    const totalScore = document.getElementById("totalscore");
+    if (!totalScore) throw new Error("totalscore Element not found");
+    totalScore.textContent = `Total score: ${gameState.stats.totalScore.toLocaleString()}`;
   } catch (error) {
     console.warn("DOM Update Error:", error.message);
   }
   try {
-    const PlayTime = document.getElementById("playtime");
-    if (!PlayTime) throw new Error("playtime Element not found");
-    PlayTime.textContent = `Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
+    const playTime = document.getElementById("playtime");
+    if (!playTime) throw new Error("playtime Element not found");
+    playTime.textContent = `Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
   } catch (error) {
     console.warn("DOM Update Error:", error.message);
   }
 }
 
-function KeyboardShortcut(event, func, targetKey) {
+export function keyboardShortcut(event, func, targetKey) {
   if (event.key === targetKey) {
     event.preventDefault();
     func();
@@ -48,7 +48,7 @@ function KeyboardShortcut(event, func, targetKey) {
 }
 
 export class MainButtonModel {
-  static gameDataProcess() {
+  gameDataProcess() {
     gameState.score += gameState.cps;
     gameState.stats.totalScore += gameState.cps;
     gameState.stats.totalClicks++;
@@ -69,7 +69,7 @@ export class MainButtonView {
       console.warn("DOM Update Error:", error.message);
     }
   }
-  ApplyDOM() {
+  applyDOM() {
     this.#updateTextContent("score-counter", `Score is ${gameState.score.toLocaleString()}`);
     this.#updateTextContent("main-button-clicked-times", `Button clicks: ${gameState.stats.totalClicks.toLocaleString()}`);
     this.#updateTextContent("totalscore", `Total score: ${gameState.stats.totalScore.toLocaleString()}`);
@@ -107,7 +107,7 @@ export class MainButtonController {
   }
   #handleClick() {
     this.model.gameDataProcess();
-    this.view.ApplyDOM();
+    this.view.applyDOM();
     this.view.floatCPSValue(event);
   }
 
@@ -131,10 +131,6 @@ export class DataManagementModel {
   }
   resetGame() {
     localStorage.removeItem('GameData');
-    location.reload();
-  }
-  static autoSaveGame() {
-
   }
 }
 
@@ -318,8 +314,8 @@ function createNotification(msg) {
   });
 }
 
-export function GameDataExport(element) {
-  const GameDataExportTrigger = () => {
+export function gameDataExport(element) {
+  const gameDataExportTrigger = () => {
     const blob = new Blob([btoa(JSON.stringify(gameState))], { type: 'text/plain' });
 
     const a = document.createElement('a');
@@ -327,12 +323,12 @@ export function GameDataExport(element) {
     a.download = 'gamedata.txt';
     a.click();
   }
-  element.addEventListener('click', GameDataExportTrigger);
-  window.addEventListener("keydown", (event) => KeyboardShortcut(event, GameDataExportTrigger, "ctrlKey" && "e"));
+  element.addEventListener('click', gameDataExportTrigger);
+  window.addEventListener("keydown", (event) => keyboardShortcut(event, gameDataExportTrigger, "ctrlKey" && "e"));
 }
 
-export function GameDataImport(element) {
-  const GameDataImportTrigger = (ev) => {
+export function gameDataImport(element) {
+  const gameDataImportTrigger = (ev) => {
     const file = ev.target.files;
     const reader = new FileReader();
     reader.readAsText(file[0]);
@@ -342,8 +338,8 @@ export function GameDataImport(element) {
       updateDOM();
     }
   }
-  element.addEventListener("change", GameDataImportTrigger);
-  window.addEventListener("keydown", (event) => KeyboardShortcut(event, GameDataImportTrigger, "ctrlKey" && "i"));
+  element.addEventListener("change", gameDataImportTrigger);
+  window.addEventListener("keydown", (event) => keyboardShortcut(event, gameDataImportTrigger, "ctrlKey" && "i"));
 }
 
 export function createModal(element, container) {
