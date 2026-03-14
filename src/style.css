@@ -187,3 +187,8 @@ button:hover,
     z-index: 1;
   }
 }
+
+  #header-stats-section {
+    background-color: #f9f9f9;
+  }
+

@@ -17,27 +17,6 @@ function updateDOM() {
   } catch (error) {
     console.warn("DOM Update Error:", error.message);
   }
-  try {
-    const mainButtonClickedTimes = document.getElementById("main-button-clicked-times");
-    if (!mainButtonClickedTimes) throw new Error("main-button-clicked-times Element not found");
-    mainButtonClickedTimes.textContent = `Button clicks: ${gameState.stats.totalClicks.toLocaleString()}`;
-  } catch (error) {
-    console.warn("DOM Update Error:", error.message);
-  }
-  try {
-    const totalScore = document.getElementById("totalscore");
-    if (!totalScore) throw new Error("totalscore Element not found");
-    totalScore.textContent = `Total score: ${gameState.stats.totalScore.toLocaleString()}`;
-  } catch (error) {
-    console.warn("DOM Update Error:", error.message);
-  }
-  try {
-    const playTime = document.getElementById("playtime");
-    if (!playTime) throw new Error("playtime Element not found");
-    playTime.textContent = `Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
-  } catch (error) {
-    console.warn("DOM Update Error:", error.message);
-  }
 }
 
 export function keyboardShortcut(event, func, targetKey) {
@@ -71,8 +50,6 @@ export class MainButtonView {
   }
   applyDOM() {
     this.#updateTextContent("score-counter", `Score is ${gameState.score.toLocaleString()}`);
-    this.#updateTextContent("main-button-clicked-times", `Button clicks: ${gameState.stats.totalClicks.toLocaleString()}`);
-    this.#updateTextContent("totalscore", `Total score: ${gameState.stats.totalScore.toLocaleString()}`);
   }
   clicksPerSeccondApplyDOM() {
     this.#updateTextContent("clicks-per-second", `Click(s) Per Second(CPS): ${gameState.clicksPerSecond}`);
@@ -364,6 +341,30 @@ export function createModal(element, container) {
     modal.prepend(closeBtn);
 
     if (element.id === "game-upgrades-button") renderUpgrades();
+
+    if (element.id === "game-status-button") {
+      try {
+        const mainButtonClickedTimes = document.getElementById("main-button-clicked-times");
+        if (!mainButtonClickedTimes) throw new Error("main-button-clicked-times Element not found");
+        mainButtonClickedTimes.textContent = `Button clicks: ${gameState.stats.totalClicks.toLocaleString()}`;
+      } catch (error) {
+        console.warn("DOM Update Error:", error.message);
+      }
+      try {
+        const totalScore = document.getElementById("totalscore");
+        if (!totalScore) throw new Error("totalscore Element not found");
+        totalScore.textContent = `Total score: ${gameState.stats.totalScore.toLocaleString()}`;
+      } catch (error) {
+        console.warn("DOM Update Error:", error.message);
+      }
+      try {
+        const playTime = document.getElementById("playtime");
+        if (!playTime) throw new Error("playtime Element not found");
+        playTime.textContent = `Playtime: ${gameState.stats.hours} hours, ${gameState.stats.minutes} minutes`;
+      } catch (error) {
+        console.warn("DOM Update Error:", error.message);
+      }
+    }
 
     const close_modal = document.getElementById(`${element.id}-close-modal`);
     close_modal.addEventListener('click', () => document.getElementById(`${element.id}-modal`).parentNode.remove());
