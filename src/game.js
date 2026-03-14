@@ -19,8 +19,8 @@ function updateDOM() {
   }
 }
 
-export function keyboardShortcut(event, func, targetKey) {
-  if (event.key === targetKey) {
+function keyboardShortcut(event, func, condition) {
+  if (condition) {
     event.preventDefault();
     func();
   }
@@ -137,7 +137,8 @@ export class DataManagementController {
 
   saveGame(element) {
     try {
-      element.addEventListener('click', () => this.model.saveGame());
+      element.addEventListener('click', this.model.saveGame);
+      window.addEventListener("keydown", (event) => keyboardShortcut(event, this.model.saveGame, event.ctrlKey && event.key === 's'));
     } catch (error) {
       this.view.errorText(error, "save");
     }
@@ -147,6 +148,7 @@ export class DataManagementController {
     element.addEventListener('click', () => {
       if (confirm("Are you sure you want to reset?") && confirm("Do you truly, truly want to reset? This action cannot be undone.")) {
         this.model.resetGame();
+        location.reload();
       }
     });
   }
@@ -301,11 +303,15 @@ export function gameDataExport(element) {
     a.click();
   }
   element.addEventListener('click', gameDataExportTrigger);
-  window.addEventListener("keydown", (event) => keyboardShortcut(event, gameDataExportTrigger, "ctrlKey" && "e"));
+  window.addEventListener("keydown", (event) => keyboardShortcut(event, gameDataExportTrigger, event.ctrlKey && event.key === 'e'));
 }
 
 export function gameDataImport(element) {
   const gameDataImportTrigger = (ev) => {
+    if (event.type === "keydown") {
+      element.click();
+      return;
+    }
     const file = ev.target.files;
     const reader = new FileReader();
     reader.readAsText(file[0]);
@@ -316,7 +322,7 @@ export function gameDataImport(element) {
     }
   }
   element.addEventListener("change", gameDataImportTrigger);
-  window.addEventListener("keydown", (event) => keyboardShortcut(event, gameDataImportTrigger, "ctrlKey" && "i"));
+  window.addEventListener("keydown", (event) => keyboardShortcut(event, gameDataImportTrigger, event.ctrlKey && event.key === 'i'));
 }
 
 export function createModal(element, container) {

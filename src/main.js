@@ -1,5 +1,5 @@
 import './style.css'
-import { gameDataExport, gameDataImport, unlockContent, createModal, keyboardShortcut, MainButtonModel, MainButtonView, MainButtonController, DataManagementModel, DataManagementView, DataManagementController } from './game.js'
+import { gameDataExport, gameDataImport, unlockContent, createModal, MainButtonModel, MainButtonView, MainButtonController, DataManagementModel, DataManagementView, DataManagementController } from './game.js'
 
 document.querySelector('#app').innerHTML = `
   <header>
@@ -28,7 +28,6 @@ document.querySelector('#app').innerHTML = `
 `
 const dataManagementController = new DataManagementController(new DataManagementModel(), new DataManagementView());
 window.addEventListener('DOMContentLoaded', dataManagementController.loadGame());
-//window.addEventListener("keydown", (event) => keyboardShortcut(event, dataManagementController.saveGame(), "ctrlKey" && "s"));
 dataManagementController.saveGame(document.getElementById("game-data-save-button"));
 dataManagementController.resetGame(document.getElementById("game-data-remove-button"));
 dataManagementController.autoSaveGame(document.getElementById("autosave-checkbox"));
