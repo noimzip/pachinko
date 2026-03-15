@@ -11,8 +11,8 @@ const gameState = {
 // DOM management functions
 function updateDOM() {
   try {
-    const scoreCounter = document.getElementById("score-counter");
-    if (!scoreCounter) throw new Error("score-counter Element not found");
+    const scoreCounter = document.getElementById("score-counter-display");
+    if (!scoreCounter) throw new Error("score-counter-display Element not found");
     scoreCounter.textContent = `Score is ${gameState.score.toLocaleString()}`;
   } catch (error) {
     console.warn("DOM Update Error:", error.message);
@@ -49,10 +49,10 @@ export class MainButtonView {
     }
   }
   applyDOM() {
-    this.#updateTextContent("score-counter", `Score is ${gameState.score.toLocaleString()}`);
+    this.#updateTextContent("score-counter-display", `Score is ${gameState.score.toLocaleString()}`);
   }
   clicksPerSeccondApplyDOM() {
-    this.#updateTextContent("clicks-per-second", `Click(s) Per Second(CPS): ${gameState.clicksPerSecond}`);
+    this.#updateTextContent("clicks-per-second-display", `Click(s) Per Second(CPS): ${gameState.clicksPerSecond}`);
   }
   floatCPSValue(event) {
     const msgid = `cps-float-value-${Date.now()}`;
@@ -119,16 +119,17 @@ export class DataManagementView {
 }
 
 export class DataManagementController {
-  constructor(model, view) {
+  constructor(model, view, autosaveTriggerCheckboxElement) {
     this.model = model;
     this.view = view;
+    this.autosaveTriggerCheckboxElement = autosaveTriggerCheckboxElement;
     this.autoSaveInterval = null;
   }
 
   loadGame() {
     try {
       this.model.loadGame();
-      (gameState.settings.autosave) ? document.getElementById("autosave-checkbox").checked = true : document.getElementById("autosave-checkbox").checked = false;
+      (gameState.settings.autosave) ? document.getElementById(this.autosaveTriggerCheckboxElement).checked = true : document.getElementById(this.autosaveTriggerCheckboxElement).checked = false;
       updateDOM();
     } catch (error) {
       this.view.errorText(error, "load");
@@ -181,11 +182,20 @@ export class DataManagementController {
   }, 60000)
 }());
 
-export function unlockContent(lockedElement, costElement, requiredScore) {
+export function unlockContent(lockedElement, requiredScore) {
   window.addEventListener('load', () => {
     if (gameState.stats.totalScore >= requiredScore) {
       lockedElement.setAttribute("aria-disabled", "false");
-      costElement.remove();
+      
+      let lockedElementText = "";
+      lockedElement.childNodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          lockedElementText += node.textContent;
+        }
+      });
+
+      lockedElement.replaceChildren();
+      lockedElement.textContent = lockedElementText.trim();
     }
   });
 }
@@ -346,9 +356,9 @@ export function createModal(element, container) {
     modal_background.prepend(modal);
     modal.prepend(closeBtn);
 
-    if (element.id === "game-upgrades-button") renderUpgrades();
+    if (element.id === "upgrade-modal-trigger-button") renderUpgrades();
 
-    if (element.id === "game-status-button") {
+    if (element.id === "status-modal-trigger-button") {
       try {
         const mainButtonClickedTimes = document.getElementById("main-button-clicked-times");
         if (!mainButtonClickedTimes) throw new Error("main-button-clicked-times Element not found");
