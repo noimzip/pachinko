@@ -36,6 +36,10 @@ export class MainButtonModel {
   resetCPS() {
     gameState.clicksPerSecond = 0;
   }
+  playSound() {
+    const sound = new Audio('../public/mainbutton.mp3');
+    sound.play();
+  }
 }
 
 export class MainButtonView {
@@ -86,6 +90,7 @@ export class MainButtonController {
     this.model.gameDataProcess();
     this.view.applyDOM();
     this.view.floatCPSValue(event);
+    this.model.playSound();
   }
 
   init(element) {
