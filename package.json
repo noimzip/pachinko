@@ -10,7 +10,7 @@
     "prepare": "vp config"
   },
   "devDependencies": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+    "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.13",
     "vite-plus": "latest"
   },
   "overrides": {
