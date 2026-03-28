@@ -56,14 +56,10 @@ jobs:
         run: vp install
 
       - name: コード品質チェック (lint, format, type check)
-        run: vp check
+        run: vp check --fix
 
       - name: プロダクションビルド
         run: vp build
-        env:
-          VITE_SAKURA_AI_API_KEY: ${{ secrets.VITE_SAKURA_AI_API_KEY }}
-          VITE_SAKURA_AI_BASE_URL: ${{ secrets.VITE_SAKURA_AI_BASE_URL }}
-
       - name: GitHub Pages を設定
         uses: actions/configure-pages@v5
         with:
