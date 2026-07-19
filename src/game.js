@@ -5,8 +5,27 @@ const gameState = {
   stats: { minutes: 0, hours: 0, totalClicks: 0, totalScore: 0 },
   settings: { autosave: false },
   boughtUpgrades: [],
-  unlockedAchievements: []
+  unlockedAchievements: [],
 };
+
+/*
+class UpdateDOMModel {
+  #errorcheck(element) {
+    try {
+      if (!element) throw new Error(`${element} Element not found`);
+    } catch (error) {
+      console.warn("DOM Update Error:", error.message);
+    }
+  }
+}
+
+class UpdateDOMView {
+  
+}
+
+class UpdateDOMController {
+  
+}*/
 
 // DOM management functions
 function updateDOM() {
@@ -37,7 +56,7 @@ export class MainButtonModel {
     gameState.clicksPerSecond = 0;
   }
   playSound() {
-    const sound = new Audio('../public/mainbutton.mp3');
+    const sound = new Audio("/mainbutton.mp3");
     sound.play();
   }
 }
@@ -53,10 +72,16 @@ export class MainButtonView {
     }
   }
   applyDOM() {
-    this.#updateTextContent("score-counter-display", `Score is ${gameState.score.toLocaleString()}`);
+    this.#updateTextContent(
+      "score-counter-display",
+      `Score is ${gameState.score.toLocaleString()}`,
+    );
   }
   clicksPerSeccondApplyDOM() {
-    this.#updateTextContent("clicks-per-second-display", `Click(s) Per Second(CPS): ${gameState.clicksPerSecond}`);
+    this.#updateTextContent(
+      "clicks-per-second-display",
+      `Click(s) Per Second(CPS): ${gameState.clicksPerSecond}`,
+    );
   }
   floatCPSValue(event) {
     const msgid = `cps-float-value-${Date.now()}`;
@@ -71,13 +96,13 @@ export class MainButtonView {
     foreground.appendChild(div);
 
     const floatcpsElement = document.getElementById(msgid);
-    floatcpsElement.style.position = 'absolute';
-    floatcpsElement.style.pointerEvents = 'none';
-    floatcpsElement.style.left = x - 10 + 'px';
-    floatcpsElement.style.top = y - 10 + 'px';
-    floatcpsElement.style.animation = 'floatWord 5s forwards linear';
+    floatcpsElement.style.position = "absolute";
+    floatcpsElement.style.pointerEvents = "none";
+    floatcpsElement.style.left = x - 10 + "px";
+    floatcpsElement.style.top = y - 10 + "px";
+    floatcpsElement.style.animation = "floatWord 5s forwards linear";
 
-    setTimeout(() => floatcpsElement.remove(), 5000); 
+    setTimeout(() => floatcpsElement.remove(), 5000);
   }
 }
 
@@ -94,7 +119,7 @@ export class MainButtonController {
   }
 
   init(element) {
-    element.addEventListener('click', () => this.#handleClick());
+    element.addEventListener("click", () => this.#handleClick());
     setInterval(() => {
       this.view.clicksPerSeccondApplyDOM();
       this.model.resetCPS();
@@ -104,15 +129,15 @@ export class MainButtonController {
 
 export class DataManagementModel {
   loadGame() {
-    const savedData = localStorage.getItem('GameData');
+    const savedData = localStorage.getItem("GameData");
     if (savedData) Object.assign(gameState, JSON.parse(savedData));
   }
   saveGame() {
-    localStorage.setItem('GameData', JSON.stringify(gameState));
+    localStorage.setItem("GameData", JSON.stringify(gameState));
     createNotification("Saved.");
   }
   resetGame() {
-    localStorage.removeItem('GameData');
+    localStorage.removeItem("GameData");
   }
 }
 
@@ -134,7 +159,9 @@ export class DataManagementController {
   loadGame() {
     try {
       this.model.loadGame();
-      (gameState.settings.autosave) ? document.getElementById(this.autosaveTriggerCheckboxElement).checked = true : document.getElementById(this.autosaveTriggerCheckboxElement).checked = false;
+      gameState.settings.autosave
+        ? (document.getElementById(this.autosaveTriggerCheckboxElement).checked = true)
+        : (document.getElementById(this.autosaveTriggerCheckboxElement).checked = false);
       updateDOM();
     } catch (error) {
       this.view.errorText(error, "load");
@@ -143,16 +170,21 @@ export class DataManagementController {
 
   saveGame(element) {
     try {
-      element.addEventListener('click', this.model.saveGame);
-      window.addEventListener("keydown", (event) => keyboardShortcut(event, this.model.saveGame, event.ctrlKey && event.key === 's'));
+      element.addEventListener("click", this.model.saveGame);
+      window.addEventListener("keydown", (event) =>
+        keyboardShortcut(event, this.model.saveGame, event.ctrlKey && event.key === "s"),
+      );
     } catch (error) {
       this.view.errorText(error, "save");
     }
   }
 
   resetGame(element) {
-    element.addEventListener('click', () => {
-      if (confirm("Are you sure you want to reset?") && confirm("Do you truly, truly want to reset? This action cannot be undone.")) {
+    element.addEventListener("click", () => {
+      if (
+        confirm("Are you sure you want to reset?") &&
+        confirm("Do you truly, truly want to reset? This action cannot be undone.")
+      ) {
         this.model.resetGame();
         location.reload();
       }
@@ -170,9 +202,9 @@ export class DataManagementController {
         clearInterval(this.autoSaveInterval);
         gameState.settings.autosave = false;
       }
-    }
-    element.addEventListener('change', autoSaveGameTrigger);
-    window.addEventListener('load', autoSaveGameTrigger);
+    };
+    element.addEventListener("change", autoSaveGameTrigger);
+    window.addEventListener("load", autoSaveGameTrigger);
   }
 }
 
@@ -184,16 +216,16 @@ export class DataManagementController {
       gameState.stats.minutes = 0;
     }
     updateDOM();
-  }, 60000)
-}());
+  }, 60000);
+})();
 
 export function unlockContent(lockedElement, requiredScore) {
-  window.addEventListener('load', () => {
+  window.addEventListener("load", () => {
     if (gameState.stats.totalScore >= requiredScore) {
       lockedElement.setAttribute("aria-disabled", "false");
-      
+
       let lockedElementText = "";
-      lockedElement.childNodes.forEach(node => {
+      lockedElement.childNodes.forEach((node) => {
         if (node.nodeType === Node.TEXT_NODE) {
           lockedElementText += node.textContent;
         }
@@ -205,40 +237,38 @@ export function unlockContent(lockedElement, requiredScore) {
   });
 }
 
-class Upgrade {
-  constructor(id, name, cost, effectformula, effectdescription, description) {
-    this.id = id;
-    this.name = name;
-    this.cost = cost;
-    this.effectformula = effectformula;
-    this.effectdescription = effectdescription;
-    this.description = description;
+class UpgradeModel {
+  costRequirement(cost) {
+    return gameState.score >= cost;
   }
-  applyDOM() {
+}
+
+class UpgradeView {
+  applyDOM(id, name, cost, effectdescription, description) {
     const upgradesArea = document.getElementById("upgrades-area");
-  
+
     const upgrade = document.createElement("div");
     upgrade.className = "upgrade";
-    upgrade.id = this.id;
-  
+    upgrade.id = id;
+
     const tooltip = document.createElement("div");
     tooltip.className = "upgrade-tooltip";
 
     const upgradeName = document.createElement("div");
     upgradeName.className = "upgrade-name";
-    upgradeName.textContent = this.name;
+    upgradeName.textContent = name;
 
     const upgradeCost = document.createElement("div");
     upgradeCost.className = "upgrade-cost";
-    upgradeCost.textContent = `${this.cost.toLocaleString()} score`;
+    upgradeCost.textContent = `${cost.toLocaleString()} score`;
 
     const upgradeEffect = document.createElement("div");
     upgradeEffect.className = "upgrade-effect";
-    upgradeEffect.textContent = this.effectdescription;
+    upgradeEffect.textContent = effectdescription;
 
     const upgradeDescription = document.createElement("div");
     upgradeDescription.className = "upgrade-description";
-    upgradeDescription.textContent = this.description;
+    upgradeDescription.textContent = description;
 
     tooltip.appendChild(upgradeName);
     tooltip.appendChild(upgradeCost);
@@ -247,12 +277,70 @@ class Upgrade {
     upgrade.appendChild(tooltip);
     upgradesArea.prepend(upgrade);
   }
-  costRequirement() {
-    return gameState.score >= this.cost;
+  renderUpgrades() {
+    const upgradesList = [
+      [
+        "cps+1",
+        "The Beginning",
+        100,
+        () => {
+          gameState.cps += 1;
+        },
+        "CPS +1",
+        "CPS increases by 1.",
+      ],
+      [
+        "cps+2",
+        "kill two birds with one stone",
+        500,
+        () => {
+          gameState.cps += 2;
+        },
+        "CPS +2",
+        "CPS increases by 2.",
+      ],
+      [
+        "cps+3",
+        "CPS +3",
+        1000,
+        () => {
+          gameState.cps += 3;
+        },
+        "CPS +3",
+        "CPS increases by 3.",
+      ],
+      [
+        "heroic-tale",
+        "",
+        10000,
+        () => {},
+        "An Endless Heroic Tale",
+        "For every 10,000 points, choose one upgrade from three options to receive.",
+      ],
+    ];
+    upgradesList.forEach((upgrade) => {
+      if (!gameState.boughtUpgrades.includes(upgrade[0])) {
+        new UpgradeView().applyDOM(upgrade);
+        new UpgradeController(upgrade).paymentCost();
+      }
+    });
+  }
+}
+
+class UpgradeController {
+  constructor(model, view, id, name, cost, effectformula, effectdescription, description) {
+    this.model = model;
+    this.view = view;
+    this.id = id;
+    this.name = name;
+    this.cost = cost;
+    this.effectformula = effectformula;
+    this.effectdescription = effectdescription;
+    this.description = description;
   }
   paymentCost() {
-    document.getElementById(this.id).addEventListener('click', () => {
-      if (this.costRequirement()) {
+    document.getElementById(this.id).addEventListener("click", () => {
+      if (this.model.costRequirement()) {
         gameState.score -= this.cost;
         this.effectformula();
         updateDOM();
@@ -263,46 +351,138 @@ class Upgrade {
   }
 }
 
-export function upgradeLoad(id, name, cost, effectformula, effectdescription, description) {
-  upgradesList.push(new Upgrade(id, name, cost, effectformula, effectdescription, description));
-}
-
-const upgradesList = [];
-
-function renderUpgrades() {
-  upgradesList.forEach(upgrade => {
-    if (!gameState.boughtUpgrades.includes(upgrade.id)) {
-      upgrade.applyDOM();
-      upgrade.paymentCost();
+class endlessHeroicTale {
+  constructor(effect, timeLeft) {}
+  effect() {
+    if (gameState.score % 10000 && gameState.boughtUpgrades.includes("heroic-tale")) {
+      setTimeout(() => {
+        effect();
+      }, timeLeft);
+      // cps 2x 2min
+      // autoclick 2min(cps: 13)
+      // timemachine 2min skip(cps: 10, score only)
+      // re:endlessheroictale 2min endlessheroictale score 5000
+      // choice select two more but, reroll can't use
+      // permanently cps +1
+      // overtime next card time 2x
     }
-  });
+  }
 }
 
-upgradeLoad("cps+1", "CPS +1", 100, () => { gameState.cps += 1; }, "CPS +1", "CPS increases by 1.");
-upgradeLoad("cps+2", "CPS +2", 500, () => { gameState.cps += 2; }, "CPS +2", "CPS increases by 2.");
-upgradeLoad("cps+3", "CPS +3", 1000, () => { gameState.cps += 3; }, "CPS +3", "CPS increases by 3.");
+//upgradeLoad("cps+1", "CPS +1", 100, () => { gameState.cps += 1; }, "CPS +1", "CPS increases by 1.");
+
+class Achievement {
+  constructor(id, name, requirement, description) {
+    this.id = id;
+    this.name = name;
+    this.requirement = requirement;
+    this.description = description;
+  }
+  applyDOM() {
+    if (gameState.score >= this.requirement) {
+      const achievementsArea = document.getElementById("achievements-area");
+
+      const achievement = document.createElement("div");
+      achievement.className = "achievement";
+      achievement.id = this.id;
+
+      const tooltip = document.createElement("div");
+      tooltip.className = "achievement-tooltip";
+
+      const achievementName = document.createElement("div");
+      achievementName.className = "achievement-name";
+      achievementName.textContent = this.name;
+
+      const achievementRequirement = document.createElement("div");
+      achievementRequirement.className = "achievement-requirement";
+      achievementRequirement.textContent = this.requirement;
+
+      const achievementDescription = document.createElement("div");
+      achievementDescription.className = "achievement-description";
+      achievementDescription.textContent = this.description;
+
+      tooltip.appendChild(achievementName);
+      tooltip.appendChild(achievementRequirement);
+      tooltip.appendChild(achievementDescription);
+      achievement.appendChild(tooltip);
+      achievementsArea.prepend(achievement);
+    }
+  }
+  scoreRequirement() {
+    return gameState.score >= this.requirement;
+  }
+  unlockAchievement() {
+    if (this.scoreRequirement()) createNotification(`Achievement Unlocked: ${this.name}`);
+  }
+}
+
+export class AutomationModel {
+  requirementScoreRisingCalculation() {
+    x ^ (2 + requirement);
+  }
+}
+
+export class AutomationView {
+  applyDOM() {
+    const automation = document.createElement("div");
+    automation.className = "automation";
+    automation.id = this.id;
+
+    const tooltip = document.createElement("div");
+    tooltip.className = "automation-tooltip";
+
+    const automationName = document.createElement("div");
+    automationName.className = "automation-name";
+    automationName.textContent = this.name;
+
+    const automationRequirement = document.createElement("div");
+    automationRequirement.className = "automation-requirement";
+    automationRequirement.textContent = this.requirement;
+
+    const automationDescription = document.createElement("div");
+    automationDescription.className = "automation-description";
+    automationDescription.textContent = this.description;
+
+    tooltip.appendChild(automationName);
+    tooltip.appendChild(automationRequirement);
+    tooltip.appendChild(automationDescription);
+    automation.appendChild(tooltip);
+    automationsArea.prepend(automation);
+  }
+}
+
+export class AutomationController {
+  constructor(model, view) {
+    this.model = model;
+    this.view = view;
+  }
+
+  //if (gameState.score >= this.requirement) {
+  //  this.view.applyDOM();
+  //}
+}
 
 function createNotification(msg) {
   const msgid = `notification-${Date.now()}`;
   const notificationArea = document.getElementById("notification-area");
-  
+
   const div = document.createElement("div");
   div.className = "notification";
   div.id = msgid;
-  
-  div.textContent = msg; 
-  
+
+  div.textContent = msg;
+
   const closeBtn = document.createElement("span");
   closeBtn.className = "close-notification";
   closeBtn.textContent = "x";
   div.prepend(closeBtn);
-  
+
   notificationArea.prepend(div);
 
   const notificationTimeout = setTimeout(() => document.getElementById(msgid).remove(), 10000);
 
   const close_notification = document.querySelector(".close-notification");
-  close_notification.addEventListener('click', () => {
+  close_notification.addEventListener("click", () => {
     close_notification.parentNode.remove();
     clearTimeout(notificationTimeout);
   });
@@ -310,15 +490,17 @@ function createNotification(msg) {
 
 export function gameDataExport(element) {
   const gameDataExportTrigger = () => {
-    const blob = new Blob([btoa(JSON.stringify(gameState))], { type: 'text/plain' });
+    const blob = new Blob([btoa(JSON.stringify(gameState))], { type: "text/plain" });
 
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = 'gamedata.txt';
+    a.download = "gamedata.txt";
     a.click();
-  }
-  element.addEventListener('click', gameDataExportTrigger);
-  window.addEventListener("keydown", (event) => keyboardShortcut(event, gameDataExportTrigger, event.ctrlKey && event.key === 'e'));
+  };
+  element.addEventListener("click", gameDataExportTrigger);
+  window.addEventListener("keydown", (event) =>
+    keyboardShortcut(event, gameDataExportTrigger, event.ctrlKey && event.key === "e"),
+  );
 }
 
 export function gameDataImport(element) {
@@ -331,37 +513,39 @@ export function gameDataImport(element) {
     const reader = new FileReader();
     reader.readAsText(file[0]);
 
-    reader.onload = function() {
+    reader.onload = function () {
       Object.assign(gameState, JSON.parse(atob(reader.result)));
       updateDOM();
-    }
-  }
+    };
+  };
   element.addEventListener("change", gameDataImportTrigger);
-  window.addEventListener("keydown", (event) => keyboardShortcut(event, gameDataImportTrigger, event.ctrlKey && event.key === 'i'));
+  window.addEventListener("keydown", (event) =>
+    keyboardShortcut(event, gameDataImportTrigger, event.ctrlKey && event.key === "i"),
+  );
 }
 
 export function createModal(element, container) {
-  element.addEventListener('click', () => {
+  element.addEventListener("click", () => {
     const foreground = document.getElementById("app");
 
     const modal_background = document.createElement("div");
     modal_background.id = "modal-background";
-  
+
     const modal = document.createElement("div");
     modal.className = "modal";
     modal.id = `${element.id}-modal`;
-  
-    modal.innerHTML = container; 
-  
+
+    modal.innerHTML = container;
+
     const closeBtn = document.createElement("span");
     closeBtn.id = `${element.id}-close-modal`;
     closeBtn.textContent = "x";
-  
+
     foreground.prepend(modal_background);
     modal_background.prepend(modal);
     modal.prepend(closeBtn);
 
-    if (element.id === "upgrade-modal-trigger-button") renderUpgrades();
+    if (element.id === "upgrade-modal-trigger-button") new UpgradeView().renderUpgrades();
 
     if (element.id === "status-modal-trigger-button") {
       try {
@@ -388,6 +572,13 @@ export function createModal(element, container) {
     }
 
     const close_modal = document.getElementById(`${element.id}-close-modal`);
-    close_modal.addEventListener('click', () => document.getElementById(`${element.id}-modal`).parentNode.remove());
+    closeModalFunc(modal_background);
+    closeModalFunc(close_modal);
+
+    function closeModalFunc(close_action) {
+      close_action.addEventListener("click", () =>
+        document.getElementById(`${element.id}-modal`).parentNode.remove(),
+      );
+    }
   });
 }
